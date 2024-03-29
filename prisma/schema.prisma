@@ -21,10 +21,10 @@ model Role {
 }
 
 model Genre {
-  id       Int       @id @default(autoincrement())
-  name     String    @unique
-  label    String    @unique
-  patients Patient[]
+  id     Int      @id @default(autoincrement())
+  name   String   @unique
+  label  String   @unique
+  Client Client[]
 }
 
 model Person {
@@ -33,7 +33,7 @@ model Person {
   lastname  String
   birthdate DateTime?
   User      User[]
-  Patient   Patient[]
+  Client    Client[]
 }
 
 model User {
@@ -46,16 +46,10 @@ model User {
   personId Int?
 }
 
-model Patient {
+model Client {
   id       Int     @id @default(autoincrement())
   Person   Person? @relation(fields: [personId], references: [id])
   personId Int?
   Genre    Genre?  @relation(fields: [genreId], references: [id])
   genreId  Int?
-}
-
-model Medicine {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-  stock Int
 }
