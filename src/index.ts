@@ -1,26 +1,23 @@
-import express from "express";
-import cors from "cors";
-import morgan from "morgan";
-import indexRoutes from "./routes/index.routes";
+import { app as server } from "./app";
+import { prisma } from "./db";
+import { insertAdminSeeder } from "./seeders/admin/admin.service";
+import { insertRoleSeeders } from "./seeders/role/role.service";
 
-// initialization
-const PORT = process.env.PORT || 3001;
-const app = express();
-
-// middlewares
-app.use(cors());
-app.use(morgan("dev"));
-app.use(express.urlencoded({ extended: true, limit: "50mb" }));
-app.use(express.json({ limit: "50mb" }));
-
-// root route
-app.get("/", (_req, res) => {
-  res.send("Bienvenido al panel de medical dashboard");
-});
-
-app.use("/api", indexRoutes);
+// Get PORT
+const currentPort = server.get("PORT");
 
 // server up
-app.listen(PORT, () => {
-  console.log(`Server is running on PORT ${PORT}...`);
+server.listen(currentPort, async () => {
+  // valida si la tabla role contiene datos
+  const isNotEmpty = await prisma.role.count();
+  if (!isNotEmpty) {
+    await insertRoleSeeders();
+  }
+
+  // valida si no existe un admin por default
+  const isNotAdminExist = await prisma.user.count();
+  if (!isNotAdminExist) {
+    await insertAdminSeeder();
+  }
+  console.log(`Server is running on PORT ${currentPort}...`);
 });
