@@ -4,7 +4,7 @@ export const options = {
     info: {
       title: "Zfit Dashboard API",
       version: "1.0.0",
-      description: "Panel de Administración para gimnasio ZFIT",
+      description: "API de recursos para Dashboard ZFIT",
     },
     servers: [
       {
@@ -12,5 +12,5 @@ export const options = {
       },
     ],
   },
-  apis: ["./src/routes/.ts"],
+  apis: ["./src/routes/*.ts", "./src/auth/*.routes.ts"],
 };
