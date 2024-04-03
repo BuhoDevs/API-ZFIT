@@ -1,8 +1,8 @@
-import { Router } from "express"
-import { adminRoutes } from "./admin.routes";
+// import { Router } from "express"
+// import { adminRoutes } from "./admin.routes";
 
 
-export const router = Router()
+// export const router = Router()
 
-router.use(adminRoutes)
+// router.use(adminRoutes)
 
