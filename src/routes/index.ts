@@ -1,10 +1,10 @@
-import { Router } from "express"
+// import { Router } from "express"
 import { userClientRoutes } from "./users/userClient.routes";
-//import { adminRoutes } from "./admin.routes";
+//// import { adminRoutes } from "./admin.routes";
 
-export const router = Router()
+// export const router = Router()
 
-//router.use(adminRoutes)
+//// router.use(adminRoutes)
 //rutas estructuradas
 
 router.use("userClient", userClientRoutes)
