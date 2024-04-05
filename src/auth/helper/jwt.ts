@@ -1,16 +1,12 @@
-import { JwtPayload, sign, verify } from "jsonwebtoken"
-
+import { JwtPayload, sign, verify } from "jsonwebtoken";
 
 export const generateToken = (id: string) => {
-    const jwt = sign({ id }, process.env.TOKEN_CLAVE || "password", {
-        expiresIn: "3h",
-    })
-    return jwt
-}
-
-
+  const jwt = sign({ id }, process.env.TOKEN_CLAVE || "password", {
+    expiresIn: "3h",
+  });
+  return jwt;
+};
 
 export const verifyToken = (jwt: string): JwtPayload | string => {
-    const isOk = verify(jwt, process.env.TOKEN_CLAVE || "password")
-    return isOk
-}
+  return verify(jwt, process.env.TOKEN_CLAVE || "password");
+};

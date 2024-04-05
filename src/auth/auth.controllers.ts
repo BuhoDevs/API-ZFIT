@@ -1,16 +1,20 @@
-import { Request, Response } from 'express';
-import { userLogin } from '../auth/auh.service';
+import { Request, Response } from "express";
+import { userLogin } from "../auth/auh.service";
 
 export const Login = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
 
-    const { email, password } = req.body;
+  try {
+    console.log(email, password, "user body data");
+    const loginResult = await userLogin(email, password);
 
-    try
-    {
-        const message = await userLogin(email, password);
-        return res.json(message);
-    } catch (error)
-    {
-        return res.status(401).json({ message: "Error al loguearse" });
+    if (loginResult.error) {
+      return res
+        .status(loginResult.code)
+        .json({ message: loginResult.message });
     }
-}
+    return res.json(loginResult);
+  } catch (error) {
+    return res.status(401).json({ message: "Error al loguearse" });
+  }
+};
