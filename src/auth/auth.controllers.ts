@@ -1,10 +1,13 @@
 import { Request, Response } from "express";
 import { userLogin, userRegister } from "../auth/auh.service";
+import { userLogin } from "../auth/auh.service";
+
 
 export const Login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   try {
+
     const user = await userLogin(email, password);
     return res.json({ message: "Usuario logueado con exito", user });
   } catch (error) {
@@ -20,5 +23,17 @@ export const Register = async (req: Request, res: Response) => {
     return res.json({ message: "Usuario creado con éxito", newUser });
   } catch (error) {
     return res.status(401).json({ error: "Error al crear el usuario" });
+
+    console.log(email, password, "user body data");
+    const loginResult = await userLogin(email, password);
+
+    if (loginResult.error) {
+      return res
+        .status(loginResult.code)
+        .json({ message: loginResult.message });
+    }
+    return res.json(loginResult);
+  } catch (error) {
+    return res.status(401).json({ message: "Error al loguearse" });
   }
 };
