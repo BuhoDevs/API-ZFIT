@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Login, Register } from "./auth.controllers";
+import { Login } from "./auth.controllers";
 
 const authRoutes = Router();
 /**
@@ -93,7 +93,6 @@ const authRoutes = Router();
  *          500:
  *              description: Error interno del servidor
  */
-authRoutes.post("/register", Register);
 
 authRoutes.post("/login", Login);
 

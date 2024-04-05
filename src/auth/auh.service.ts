@@ -1,40 +1,9 @@
-import { passwordHashado, correctPassword } from "./helper/bcrypt";
+import { correctPassword } from "./helper/bcrypt";
 import { generateToken } from "./helper/jwt";
 
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
-
-export const userRegister = async (
-  firstname: string,
-  lastname: string,
-  email: string,
-  password: string
-) => {
-  try {
-    const encriptado = await passwordHashado(password);
-
-    const newUser = await prisma.person.create({
-      data: {
-        firstname,
-        lastname,
-        User: {
-          create: {
-            email,
-            password: encriptado,
-          },
-        },
-      },
-      include: {
-        User: true,
-      },
-    });
-
-    return newUser;
-  } catch (error) {
-    throw error;
-  }
-};
 
 export const userLogin = async (email: string, password: string) => {
   const user = await prisma.user.findUnique({
