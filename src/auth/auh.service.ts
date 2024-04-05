@@ -1,23 +1,17 @@
-import { Request, Response } from "express";
+import { PrismaClient } from "@prisma/client";
 import { passwordHashado, correctPassword } from "./helper/bcrypt";
 import { generateToken } from "./helper/jwt";
 
-// import { IAdmin } from "../DTO/IAdmin";
-// import { Admin } from "../models/Admin";
-// import { validateRegister } from "../validations/register";
-
-import { PrismaClient } from "@prisma/client";
-
 const prisma = new PrismaClient();
 
-export const userRegister = async (req: Request, res: Response) => {
-  const { firstname, lastname, email, password } = req.body;
-
-  try
-  {
-    // const validations = validateRegister(usuario);
-
-    const encriptado = await passwordHashado(password);
+export const userRegister = async (
+  firstname: string,
+  lastname: string,
+  email: string,
+  password: string
+) => {
+  try {
+    const encryptedPassword = await passwordHashado(password);
 
     const newUser = await prisma.person.create({
       data: {
@@ -26,38 +20,28 @@ export const userRegister = async (req: Request, res: Response) => {
         User: {
           create: {
             email,
-            password: encriptado,
+            password: encryptedPassword,
           },
         },
       },
       include: {
-        User: true, // Incluye la información del usuario creado
+        User: true,
       },
     });
 
-    if (newUser)
-    {
-      res.status(400).json({ message: "Usuario Creeado con exito", newUser });
-    }
-  } catch (error)
-  {
-    console.error("Error al crear el usuario:", error);
-    res.status(500).json({ error: "Error al crear el usuario" });
+    return newUser;
+  } catch (error) {
+    throw error;
   }
 };
 
-
-
-
 export const userLogin = async (email: string, password: string) => {
-  try
-  {
+  try {
     const user = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
 
-    if (!user)
-    {
+    if (!user) {
       return {
         code: 404,
         error: true,
@@ -71,7 +55,8 @@ export const userLogin = async (email: string, password: string) => {
 
     const isCorrect = await correctPassword(password, passwordHash);
 
-    if (isCorrect) { }
+    if (isCorrect) {
+    }
 
     return {
       token,
@@ -79,9 +64,8 @@ export const userLogin = async (email: string, password: string) => {
       code: 201,
       error: true,
       message: "Usuario encontrado",
-    }
-  } catch (error)
-  {
+    };
+  } catch (error) {
     throw error;
   }
 };
