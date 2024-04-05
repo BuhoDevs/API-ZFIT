@@ -14,9 +14,9 @@ export const validateRegister = (admin: IAdmin): IAdmin => {
 
   validationPassword(admin.password);
 
-  if (validationPassword(admin.password) !== admin.confirmPassword) {
-    throw new Error("El password no coincide");
-  }
+  // if (validationPassword(admin.password) !== admin.confirmPassword) {
+  //   throw new Error("El password no coincide");
+  // }
 
   return admin;
 };
