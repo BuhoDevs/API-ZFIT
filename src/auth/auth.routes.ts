@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { registerUser } from "./auh.service";
+import { userRegister } from "./auh.service";
+import { Login } from "./auth.controllers";
 
 const authRoutes = Router();
 /**
@@ -94,9 +95,11 @@ const authRoutes = Router();
  *              description: Error interno del servidor
  */
 authRoutes.post(
-  "/",
+  "/register",
   // FIXME: si es registro de nuevo usuario, esta logica deberia estar en una carpeta User
-  registerUser
+  userRegister
 );
+
+authRoutes.post("/login", Login);
 
 export default authRoutes;
