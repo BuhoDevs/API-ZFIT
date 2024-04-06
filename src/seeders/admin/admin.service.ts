@@ -19,7 +19,7 @@ export const insertAdminSeeder = async () => {
         create: {
           email: "admin@zfit.com",
           password:
-            "$2y$10$yFf7WlZxamDkZqD9n.ZaceVPAfK1aQ7rJPDf8m.HLca609ZXwvjgS",
+            "$2b$12$9.HrAG6I6Iw2YxVywhBjguqmSUk5ALt0ubWh22Rl1YDOXlGyEYLLq",
           roleId: adminRole.id,
         },
       },

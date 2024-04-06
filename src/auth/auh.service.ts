@@ -1,56 +1,47 @@
-import { Request, Response } from "express";
-// import { IAdmin } from "../DTO/IAdmin";
-// import { Admin } from "../models/Admin";
-import { passwordHashado } from "./helper/bcrypt";
-// import { validateRegister } from "../validations/register";
+import { correctPassword } from "./helper/bcrypt";
+import { generateToken } from "./helper/jwt";
 
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const registerUser = async (req: Request, res: Response) => {
-  const {
-    firstname,
-    lastname,
-    email,
-    password
-  } = req.body
+export const userLogin = async (email: string, password: string) => {
+  const user = await prisma.user.findUnique({
+    // TODO: validar el login con el estado del user
+    where: { email },
+    include: {
+      Role: true,
+      Person: true,
+    },
+  });
 
-  try
-  {
-    // const validations = validateRegister(usuario);
+  if (!user) {
+    return {
+      code: 404,
+      error: true,
+      message: "El usuario no fue encontrado",
+    };
+  }
 
+  const passwordHash = user.password;
 
-    const encriptado = await passwordHashado(password);
+  const isCorrect = await correctPassword(password, passwordHash);
 
+  if (!isCorrect) {
+    return {
+      code: 409,
+      error: true,
+      message: "Usuario y/o contraseña inválidos.",
+    };
+  }
 
+  const token = generateToken(user.email);
 
-    const newUser = await prisma.person.create({
-
-      data: {
-        firstname,
-        lastname,
-        User: {
-          create: {
-            email,
-            password: encriptado
-          }
-        }
-      }, include: {
-        User: true, // Incluye la información del usuario creado
-      },
-    }
-    );
-
-    if (newUser)
-    {
-      res.status(400).json({ message: "Usuario Creeado con exito", newUser });
-    }
-
-  } catch (error)
-  {
-    console.error('Error creating user:', error);
-    res.status(500).json({ error: 'Error creating user' });
+  const { password: passwordCopy, ...restUserValues } = user;
+  return {
+    token,
+    user: {
+      ...restUserValues,
+    },
   };
-
 };
