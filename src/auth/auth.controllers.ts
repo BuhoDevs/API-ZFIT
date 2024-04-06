@@ -5,7 +5,6 @@ export const Login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   try {
-    console.log(email, password, "user body data");
     const loginResult = await userLogin(email, password);
 
     if (loginResult.error) {
