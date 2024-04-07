@@ -1,6 +1,7 @@
 import { app as server } from "./app";
 import { prisma } from "./db";
 import { insertAdminSeeder } from "./seeders/admin/admin.service";
+import { insertGenreSeeders } from "./seeders/genre/genre.service";
 import { insertRoleSeeders } from "./seeders/role/role.service";
 
 // Get PORT
@@ -18,6 +19,12 @@ server.listen(currentPort, async () => {
   const isNotAdminExist = await prisma.user.count();
   if (!isNotAdminExist) {
     await insertAdminSeeder();
+  }
+
+  // valida si la tabla role contiene datos
+  const isNotGenreEmpty = await prisma.genre.count();
+  if (!isNotGenreEmpty) {
+    await insertGenreSeeders();
   }
   console.log(`Server is running on PORT ${currentPort}...`);
 });

@@ -7,6 +7,6 @@ export const generateToken = (id: string) => {
   return jwt;
 };
 
-export const verifyToken = (jwt: string): JwtPayload | string => {
+export const verifyToken = async (jwt: string): Promise< JwtPayload | string> => {
   return verify(jwt, process.env.TOKEN_CLAVE || "password");
 };
