@@ -3,15 +3,15 @@ import { Request, Response } from "express";
 import { userRegister } from "../user/user.service";
 
 export const Register = async (req: Request, res: Response) => {
-  const { firstname, lastname, email, password } = req.body;
+  const { firstname, lastname, birthdate, ci, phone, photo, genreId,  email, password } = req.body;
 
   try {
-    const newUser = await userRegister(firstname, lastname, email, password);
-    res
-      .status(200)
-      .json({ message: "Usuario creado con éxito", user: newUser });
-  } catch (error) {
-    console.error("Error al crear el usuario:", error);
-    res.status(500).json({ error: "Error al crear el usuario" });
+    const newUser = await userRegister(firstname, lastname, birthdate, ci, phone, photo, genreId, email, password);
+    
+    return res.status(newUser.statuscode).json({message: newUser.message})
+
+    } catch (error) {
+    console.error("Error al registrar Usuario:", error);
+    return res.status(500).json({ error: "Error al registrar Usuario" });
   }
 };

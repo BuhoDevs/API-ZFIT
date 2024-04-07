@@ -1,35 +1,56 @@
-import { PrismaClient } from "@prisma/client";
-import { passwordHashado } from "../auth/helper/bcrypt";
 
-const prisma = new PrismaClient();
+import { Decimal } from "@prisma/client/runtime/library";
+import { passwordHashado } from "../auth/helper/bcrypt";
+import { prisma } from "../db";
+import { getIsoDate } from "../utils";
 
 export const clientRegister = async (
   firstname: string,
   lastname: string,
-  email: string,
-  password: string
+  birthdate: string|undefined,
+  ci: string,
+  phone: number|undefined,
+  photo: string|undefined,
+  genreId: number,
+  weight: Decimal|undefined, 
+  height: Decimal|undefined,
+  email: string|undefined,
+  password: string|undefined,
 ) => {
-  try {
-    const encriptado = await passwordHashado(password);
-
-    const newUser = await prisma.person.create({
+  
+    let encriptado = "";
+    let isoBirthdate: string|undefined;
+    if(password)
+      encriptado = await passwordHashado(password);   
+    if(birthdate){
+        isoBirthdate = getIsoDate(birthdate)
+      }    
+    const newClient = await prisma.person.create({
       data: {
         firstname,
         lastname,
-        User: {
-          create: {
+        ...(isoBirthdate&&{birthdate:isoBirthdate}),
+        ci,
+        phone,
+        photo,
+        genreId,
+        Client: {
+          create: {                                  
+            weight,
+            height,
+            status: true,
             email,
             password: encriptado,
           },
         },
       },
       include: {
-        User: true,
+        Client: true,
       },
     });
 
-    return newUser;
-  } catch (error) {
-    throw error;
-  }
+    if(!newClient)
+      return { message: "Error en el registro de Cliente", statuscode: 409 };
+    
+      return { message: "Registro de Cliente con éxito", statuscode: 200 };
 };

@@ -24,14 +24,20 @@ model Genre {
   id     Int      @id @default(autoincrement())
   name   String   @unique
   label  String   @unique
-  Client Client[]
+  status Boolean
+  Person Person[]
 }
 
 model Person {
   id        Int       @id @default(autoincrement())
+  Genre     Genre?    @relation(fields: [genreId], references: [id])
+  genreId   Int?
   firstname String
   lastname  String
   birthdate DateTime?
+  ci        String    @unique
+  phone     Int?
+  photo     String?
   User      User[]
   Client    Client[]
 }
@@ -40,6 +46,7 @@ model User {
   id       Int     @id @default(autoincrement())
   email    String  @unique
   password String
+  status   Boolean
   Role     Role?   @relation(fields: [roleId], references: [id])
   roleId   Int?
   Person   Person? @relation(fields: [personId], references: [id])
@@ -47,9 +54,12 @@ model User {
 }
 
 model Client {
-  id       Int     @id @default(autoincrement())
-  Person   Person? @relation(fields: [personId], references: [id])
+  id       Int      @id @default(autoincrement())
+  Person   Person?  @relation(fields: [personId], references: [id])
   personId Int?
-  Genre    Genre?  @relation(fields: [genreId], references: [id])
-  genreId  Int?
+  weight   Decimal? @db.Decimal(6, 2)
+  height   Decimal? @db.Decimal(4, 2)
+  status   Boolean
+  email    String?
+  password String?
 }
