@@ -1,9 +1,7 @@
 import { correctPassword } from "./helper/bcrypt";
 import { generateToken } from "./helper/jwt";
+import { prisma } from "../db";
 
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
 
 export const userLogin = async (email: string, password: string) => {
   const user = await prisma.user.findUnique({
@@ -15,7 +13,8 @@ export const userLogin = async (email: string, password: string) => {
     },
   });
 
-  if (!user) {
+  if (!user)
+  {
     return {
       code: 404,
       error: true,
@@ -27,7 +26,8 @@ export const userLogin = async (email: string, password: string) => {
 
   const isCorrect = await correctPassword(password, passwordHash);
 
-  if (!isCorrect) {
+  if (!isCorrect)
+  {
     return {
       code: 409,
       error: true,

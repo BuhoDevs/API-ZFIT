@@ -1,4 +1,3 @@
-
 import { Decimal } from "@prisma/client/runtime/library";
 import { passwordHashado } from "../auth/helper/bcrypt";
 import { prisma } from "../db";
@@ -22,7 +21,8 @@ export const clientRegister = async (
   let isoBirthdate: string | undefined;
   if (password)
     encriptado = await passwordHashado(password);
-  if (birthdate) {
+  if (birthdate)
+  {
     isoBirthdate = getIsoDate(birthdate)
   }
   const newClient = await prisma.person.create({
@@ -59,14 +59,32 @@ export const clientRegister = async (
 
 
 export const updateClientService = async (id: number, clientData: any) => {
-  try {
+  try
+  {
     const updatedClient = await prisma.person.update({
       where: { id },
       data: clientData,
     });
     return { statuscode: 200, message: "Cliente actualizado correctamente", updatedClient };
-  } catch (error) {
-    console.error("Error al actualizar el cliente:", error);
+  } catch (error)
+  {
     return { statuscode: 500, message: "Error al actualizar el cliente" };
+  }
+};
+
+export const getClientByIdService = async (id: number) => {
+  try
+  {
+    const client = await prisma.person.findUnique({
+      where: { id },
+      include: { Client: true }
+    });
+
+    if (!client) throw new Error('Cliente no encontrado');
+
+    return client;
+  } catch (error)
+  {
+    throw error;
   }
 };
