@@ -1,5 +1,5 @@
-import { Router } from "express";
+//import { Router } from "express";
 
-export const userClientRoutes = Router()
+//export const userClientRoutes = Router()
 
-userClientRoutes.post("/register");
+//userClientRoutes.post("/register");
