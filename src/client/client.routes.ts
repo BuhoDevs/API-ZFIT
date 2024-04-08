@@ -1,9 +1,16 @@
 import { Router } from "express";
-import { Client } from "../client/client.controllers";
+import { client, updatedClient } from "../client/client.controllers";
 import { checkJwt } from "../middleware/checkJWT";
 
 const clientRoutes = Router();
 
-clientRoutes.post("/register",checkJwt, Client);
+clientRoutes.post("/register",
+  checkJwt,
+  client);
+
+
+clientRoutes.put("/update-client/:id",
+  checkJwt,
+  updatedClient);
 
 export default clientRoutes;
