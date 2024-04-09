@@ -7,8 +7,7 @@ export const client = async (req: Request, res: Response) => {
 
   const { firstname, lastname, birthdate, ci, phone, photo, genreId, weight, height, email, password } = req.body;
 
-  try
-  {
+  try {
     const existingClient = await prisma.person.findUnique({
       where: { ci }
     });
@@ -19,8 +18,7 @@ export const client = async (req: Request, res: Response) => {
 
     return res.status(newclient.statuscode).json({ message: newclient.message })
 
-  } catch (error)
-  {
+  } catch (error) {
     return res.status(500).json({ error: "Error al registrar Cliente" });
   }
 };
@@ -38,14 +36,12 @@ export const updatedClient = async (req: Request, res: Response) => {
     genreId,
   } = req.body;
 
-  try
-  {
+  try {
     const existingClient = await prisma.person.findUnique({
       where: { id },
     });
 
-    if (!existingClient)
-    {
+    if (!existingClient) {
       return res.status(404).json({ message: "El cliente no existe" });
     }
 
@@ -59,22 +55,20 @@ export const updatedClient = async (req: Request, res: Response) => {
       genreId
     });
 
-    return res.json({ message: updatedClient });
-  } catch (error)
-  {
+    return res.json({ message: "Cliente actualizado correctamente", updatedClient });
+  } catch (error) {
     return res.status(500).json({ error: "Error al actualizar el cliente" });
   }
 };
 
-export const getClientById = async (req: Request, res: Response) => {
+export const clientById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  try
-  {
+  try {
     const client = await getClientByIdService(+id);
-    res.status(200).json({ client });
-  } catch (error)
-  {
-    res.status(500).json({ error: "Error al obtener el cliente por ID" });
+    return res.json({ message: "Cliente encontrado correctamente", client });
+
+  } catch (error) {
+    return res.status(500).json({ error: "Error cliente no encontrado" });
   }
 };

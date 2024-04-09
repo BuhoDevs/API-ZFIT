@@ -7,8 +7,8 @@ const indexRoutes = Router();
 
 indexRoutes.use("/auth", authRoutes);
 
-indexRoutes.use("/user", userRoutes);
+indexRoutes.use("/users", userRoutes);
 
-indexRoutes.use("/client", clientRoutes);
+indexRoutes.use("/clients", clientRoutes);
 
 export default indexRoutes;

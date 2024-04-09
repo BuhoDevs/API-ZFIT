@@ -21,8 +21,7 @@ export const clientRegister = async (
   let isoBirthdate: string | undefined;
   if (password)
     encriptado = await passwordHashado(password);
-  if (birthdate)
-  {
+  if (birthdate) {
     isoBirthdate = getIsoDate(birthdate)
   }
   const newClient = await prisma.person.create({
@@ -59,32 +58,22 @@ export const clientRegister = async (
 
 
 export const updateClientService = async (id: number, clientData: any) => {
-  try
-  {
-    const updatedClient = await prisma.person.update({
-      where: { id },
-      data: clientData,
-    });
-    return { statuscode: 200, message: "Cliente actualizado correctamente", updatedClient };
-  } catch (error)
-  {
-    return { statuscode: 500, message: "Error al actualizar el cliente" };
-  }
+
+  const updatedClient = await prisma.person.update({
+    where: { id },
+    data: clientData,
+  });
+  return updatedClient
 };
 
 export const getClientByIdService = async (id: number) => {
-  try
-  {
-    const client = await prisma.person.findUnique({
-      where: { id },
-      include: { Client: true }
-    });
 
-    if (!client) throw new Error('Cliente no encontrado');
+  const client = await prisma.person.findUnique({
+    where: { id },
+    include: { Client: true }
+  });
 
-    return client;
-  } catch (error)
-  {
-    throw error;
-  }
-};
+  if (!client) throw new Error();
+
+  return client;
+}
