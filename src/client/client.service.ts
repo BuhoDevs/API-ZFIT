@@ -73,7 +73,7 @@ export const getClientByIdService = async (id: number) => {
     include: { Client: true }
   });
 
-  if (!client) throw new Error();
+  if (!client) throw new Error("Error cliente no encontrado");
 
   return client;
 }
