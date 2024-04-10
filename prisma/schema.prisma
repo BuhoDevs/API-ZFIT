@@ -30,8 +30,8 @@ model Genre {
 
 model Person {
   id        Int       @id @default(autoincrement())
-  Genre     Genre?    @relation(fields: [genreId], references: [id])
-  genreId   Int?
+  Genre     Genre     @relation(fields: [genreId], references: [id])
+  genreId   Int
   firstname String
   lastname  String
   birthdate DateTime?

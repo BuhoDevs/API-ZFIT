@@ -16,6 +16,7 @@ export const insertAdminSeeder = async () => {
       firstname: "Manuel",
       lastname: "Caceres",
       ci: "123456",
+      genreId: 1,
       User: {
         create: {
           email: "admin@zfit.com",
