@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { clientRegister, updateClientService, getClientByIdService } from "./client.service";
+import { clientRegister, updateClientService, getClientByIdService, allClientService } from "./client.service";
 import { prisma } from "../db";
 
 
@@ -70,5 +70,16 @@ export const clientById = async (req: Request, res: Response) => {
 
   } catch (error) {
     return res.status(500).json({ error: "Error cliente no encontrado" });
+  }
+};
+
+export const allClient = async (_req: Request, res: Response) => {
+
+  try {
+    const client = await allClientService();
+    return res.json({ message: "Clientes encontrados correctamente", client });
+
+  } catch (error) {
+    return res.status(500).json({ error: "Error clientes no encontrados" });
   }
 };
