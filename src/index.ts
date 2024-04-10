@@ -10,6 +10,12 @@ const currentPort = server.get("PORT");
 
 // server up
 server.listen(currentPort, async () => {
+  // valida si la tabla genre contiene datos
+  const isNotGenreEmpty = await prisma.genre.count();
+  if (!isNotGenreEmpty) {
+    await insertGenreSeeders();
+  }
+
   // valida si la tabla role contiene datos
   const isNotEmpty = await prisma.role.count();
   if (!isNotEmpty) {
@@ -20,12 +26,6 @@ server.listen(currentPort, async () => {
   const isNotAdminExist = await prisma.user.count();
   if (!isNotAdminExist) {
     await insertAdminSeeder();
-  }
-
-  // valida si la tabla role contiene datos
-  const isNotGenreEmpty = await prisma.genre.count();
-  if (!isNotGenreEmpty) {
-    await insertGenreSeeders();
   }
 
   const isNotClientEmpty = await prisma.client.count();

@@ -1,6 +1,5 @@
 import { prisma } from "../../db";
 
-
 export const insertClientSeeder = async () => {
   const isNotClientEmpty = await prisma.client.count();
   if (isNotClientEmpty) {
@@ -11,6 +10,7 @@ export const insertClientSeeder = async () => {
     firstname: "Juan",
     lastname: "Gomez",
     ci: "123456789",
+    genreId: 1,
     phone: 1234567890,
     photo: "",
   };
@@ -18,7 +18,7 @@ export const insertClientSeeder = async () => {
   return prisma.client.create({
     data: {
       Person: {
-        create: staticClientData
+        create: staticClientData,
       },
       weight: 70,
       height: 1.75,
@@ -27,5 +27,4 @@ export const insertClientSeeder = async () => {
       password: "",
     },
   });
-}
-
+};
