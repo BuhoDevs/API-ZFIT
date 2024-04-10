@@ -1,6 +1,7 @@
 import { app as server } from "./app";
 import { prisma } from "./db";
 import { insertAdminSeeder } from "./seeders/admin/admin.service";
+import { insertClientSeeder } from "./seeders/client/client.service";
 import { insertGenreSeeders } from "./seeders/genre/genre.service";
 import { insertRoleSeeders } from "./seeders/role/role.service";
 
@@ -25,6 +26,11 @@ server.listen(currentPort, async () => {
   const isNotGenreEmpty = await prisma.genre.count();
   if (!isNotGenreEmpty) {
     await insertGenreSeeders();
+  }
+
+  const isNotClientEmpty = await prisma.client.count();
+  if (!isNotClientEmpty) {
+    await insertClientSeeder();
   }
   console.log(`Server is running on PORT ${currentPort}...`);
 });
