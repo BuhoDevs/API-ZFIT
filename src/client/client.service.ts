@@ -88,7 +88,7 @@ export const allClientService = async () => {
 export const deleteClientByIdService = async (clientId: number) => {
   const deletedClient = await prisma.person.update({
     where: { id: clientId },
-    data: { status: true },
+    data: { status: false },
   });
 
   return deletedClient;
