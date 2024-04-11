@@ -36,7 +36,7 @@ model Person {
   lastname  String
   birthdate DateTime?
   ci        String    @unique
-  status   Boolean  @default(false)
+  status   Boolean  @default(true)
   phone     Int?
   photo     String?
   User      User[]
@@ -60,7 +60,7 @@ model Client {
   personId Int?
   weight   Decimal? @db.Decimal(6, 2)
   height   Decimal? @db.Decimal(4, 2)
-  status   Boolean  @default(false)
+  status   Boolean  @default(true)
   email    String?
   password String?
 }

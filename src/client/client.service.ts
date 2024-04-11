@@ -77,7 +77,7 @@ export const getClientByIdService = async (id: number) => {
 
 export const allClientService = async () => {
   const client = await prisma.person.findMany({
-    where: { status: false },
+    where: { status: true },
   });
 
   if (!client) throw new Error("Error clientes no encontrados");
