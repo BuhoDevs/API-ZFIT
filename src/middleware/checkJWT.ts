@@ -1,10 +1,9 @@
 import { Response, NextFunction } from "express";
 import { verifyToken } from "../auth/helper/jwt";
-// import { Usermodel } from "../models/UsersModel"
 import { JwtPayload } from "jsonwebtoken";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../db";
 
-const prisma = new PrismaClient();
+
 
 export const checkJwt = async (req: any, res: Response, next: NextFunction) => {
   try {
