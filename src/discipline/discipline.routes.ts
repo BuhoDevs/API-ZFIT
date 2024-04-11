@@ -3,19 +3,22 @@ import { checkJwt } from "../middleware/checkJWT";
 import {
   Discipline,
   editDiscipline,
+  allDiscipline,
   lowDiscipline,
 } from "./discipline.controllers";
 
-const discipleneRoutes = Router();
+const disciplineRoutes = Router();
 
-discipleneRoutes.post("/register", checkJwt, Discipline);
+disciplineRoutes.post("/register", checkJwt, Discipline);
 
-discipleneRoutes.put("/edit/:disciplineId", checkJwt, editDiscipline);
+disciplineRoutes.put("/edit/:disciplineId", checkJwt, editDiscipline);
 
-discipleneRoutes.put(
-  "/low/:disciplineId",
+disciplineRoutes.put("/low/:disciplineId", checkJwt, lowDiscipline);
+
+disciplineRoutes.get(
+  "/all",
   //checkJwt,
-  lowDiscipline
+  allDiscipline
 );
 
-export default discipleneRoutes;
+export default disciplineRoutes;

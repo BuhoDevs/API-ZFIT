@@ -1,6 +1,7 @@
 import { app as server } from "./app";
 import { prisma } from "./db";
 import { insertAdminSeeder } from "./seeders/admin/admin.service";
+import { insertDisciSeeders } from "./seeders/discipline/genre.service";
 import { insertGenreSeeders } from "./seeders/genre/genre.service";
 import { insertRoleSeeders } from "./seeders/role/role.service";
 
@@ -26,5 +27,12 @@ server.listen(currentPort, async () => {
   if (!isNotGenreEmpty) {
     await insertGenreSeeders();
   }
+
+  // valida si la tabla discipline contiene datos
+  const isNotDisciEmpty = await prisma.discipline.count();
+  if (!isNotDisciEmpty) {
+    await insertDisciSeeders();
+  }
+
   console.log(`Server is running on PORT ${currentPort}...`);
 });

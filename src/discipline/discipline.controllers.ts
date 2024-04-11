@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { prisma } from "../db";
 import {
   disciplineEdit,
+  disciplineAll,
   disciplineLow,
   disciplineRegister,
 } from "./discipline.service";
@@ -81,6 +82,18 @@ export const lowDiscipline = async (req: Request, res: Response) => {
     console.error("Error low Disciplina:", error);
     return res
       .status(500)
-      .json({ error: "Error al dar de baja la Disciplina" });
+      .json({ message: "Error al dar de baja la Disciplina" });
+  }
+};
+
+export const allDiscipline = async (_req: Request, res: Response) => {
+  try {
+    const allDiscipline = await disciplineAll();
+
+    return res.json(allDiscipline);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error al obtener todas las Disciplina" });
   }
 };

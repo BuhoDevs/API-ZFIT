@@ -44,3 +44,15 @@ export const disciplineLow = async (disciplineId: number) => {
     };
   return { message: "Baja de la Disciplina con éxito", statuscode: 200 };
 };
+
+export const disciplineAll = async () => {
+  const count = await prisma.discipline.count();
+  if (count >= 1)
+    return (await prisma.discipline.findMany({ where: { status: true } })).map(
+      (disci) => ({ ...disci, value: disci.id })
+    );
+  return {
+    message: "no hay Disciplina registradas",
+    statuscode: 409,
+  };
+};
