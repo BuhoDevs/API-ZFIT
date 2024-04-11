@@ -36,6 +36,7 @@ model Person {
   lastname  String
   birthdate DateTime?
   ci        String    @unique
+  status   Boolean  @default(true)
   phone     Int?
   photo     String?
   User      User[]
@@ -54,14 +55,14 @@ model User {
 }
 
 model Client {
-  id           Int            @id @default(autoincrement())
-  Person       Person?        @relation(fields: [personId], references: [id])
-  personId     Int?
-  weight       Decimal?       @db.Decimal(6, 2)
-  height       Decimal?       @db.Decimal(4, 2)
-  status       Boolean
-  email        String?
-  password     String?
+  id       Int      @id @default(autoincrement())
+  Person   Person?  @relation(fields: [personId], references: [id])
+  personId Int?
+  weight   Decimal? @db.Decimal(6, 2)
+  height   Decimal? @db.Decimal(4, 2)
+  status   Boolean  @default(true)
+  email    String?
+  password String?
   Subscription Subscription[]
 }
 

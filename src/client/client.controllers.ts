@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
 import {
-  clientRegister,
+  insertClient,
   updateClientService,
   getClientByIdService,
   allClientService,
+  deleteClientByIdService,
 } from "./client.service";
 import { prisma } from "../db";
 
-export const Client = async (req: Request, res: Response) => {
+export const clientRegister = async (req: Request, res: Response) => {
   const {
     firstname,
     lastname,
@@ -28,7 +29,7 @@ export const Client = async (req: Request, res: Response) => {
         .status(409)
         .json({ message: "Ya existe un Cliente con ese numero de documento" });
 
-    const newclient = await clientRegister(
+    const newclient = await insertClient(
       firstname,
       lastname,
       birthdate,
@@ -100,5 +101,20 @@ export const allClient = async (_req: Request, res: Response) => {
     return res.json({ message: "Clientes encontrados correctamente", client });
   } catch (error) {
     return res.status(500).json({ error: "Error clientes no encontrados" });
+  }
+};
+
+export const deleteClientById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const deletedClient = await deleteClientByIdService(+id);
+
+    return res.json({
+      message: "Cliente eliminado correctamente",
+      client: deletedClient,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Error al eliminar el cliente" });
   }
 };
