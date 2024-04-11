@@ -3,7 +3,7 @@ import { passwordHashado } from "../auth/helper/bcrypt";
 import { prisma } from "../db";
 import { getIsoDate } from "../utils";
 
-export const clientRegister = async (
+export const insertClient = async (
   firstname: string,
   lastname: string,
   birthdate: string | undefined,

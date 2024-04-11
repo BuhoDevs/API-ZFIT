@@ -63,4 +63,25 @@ model Client {
   status   Boolean  @default(true)
   email    String?
   password String?
+  Subscription Subscription[]
+}
+
+model Discipline {
+  id           Int            @id @default(autoincrement())
+  name         String         @unique
+  label        String
+  status       Boolean
+  Subscription Subscription[]
+}
+
+//falta complementar los datos segun se vayan creando las tablas
+model Subscription {
+  id           Int         @id @default(autoincrement())
+  dateIn       DateTime
+  dateOut      DateTime
+  status       Boolean
+  Discipline   Discipline? @relation(fields: [disciplineId], references: [id])
+  disciplineId Int?
+  Client       Client?     @relation(fields: [clientId], references: [id])
+  clientId     Int?
 }
