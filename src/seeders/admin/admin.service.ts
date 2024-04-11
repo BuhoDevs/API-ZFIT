@@ -23,7 +23,7 @@ export const insertAdminSeeder = async () => {
           password:
             "$2b$12$9.HrAG6I6Iw2YxVywhBjguqmSUk5ALt0ubWh22Rl1YDOXlGyEYLLq",
           roleId: adminRole.id,
-          status: true,
+          status: false,
         },
       },
     },

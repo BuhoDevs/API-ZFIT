@@ -1,26 +1,28 @@
 import { Router } from "express";
 import {
-  client,
-  updatedClient,
-  clientById,
-  allClient
+    client,
+    updatedClient,
+    clientById,
+    allClient,
+    deleteClientById
 } from "../client/client.controllers";
 import { checkJwt } from "../middleware/checkJWT";
 
 const clientRoutes = Router();
 
 clientRoutes.post("/register",
-  checkJwt,
-  client);
+    checkJwt,
+    client);
 
 clientRoutes.route("/:id")
-  .get(checkJwt, clientById)
-  .put(checkJwt, updatedClient)
+    .get(checkJwt, clientById)
+    .put(checkJwt, updatedClient)
+    .delete(checkJwt, deleteClientById)
 
 
 clientRoutes.get("/",
-  checkJwt,
-  allClient)
+    checkJwt,
+    allClient)
 
 
 export default clientRoutes;
