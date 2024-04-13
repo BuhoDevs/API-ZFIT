@@ -41,7 +41,7 @@ server.listen(currentPort, async () => {
     await insertDisciSeeders();
   }
 
-  const isNotSubsTypeEmpty = await prisma.subscription.count();
+  const isNotSubsTypeEmpty = await prisma.subsType.count();
   if (!isNotSubsTypeEmpty) {
     await insertSubsTypeSeeders();
   }

@@ -85,4 +85,16 @@ model Subscription {
   disciplineId Int?
   Client       Client?     @relation(fields: [clientId], references: [id])
   clientId     Int?
+  SubsType     SubsType?     @relation(fields: [subsTypeId], references: [id])
+  subsTypeId   Int?
+}
+
+
+model SubsType {
+  id     Int      @id @default(autoincrement())
+  name   String   @unique
+  montQuantity Int
+  price Int
+  status Boolean
+  Subscription Subscription[]
 }

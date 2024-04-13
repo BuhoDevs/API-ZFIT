@@ -2,9 +2,9 @@ import { ISubscriptionType } from "./types";
 
 export const subsTypeCollection: ISubscriptionType[] = [
   {
-    dateIn: new Date(),
-    dateOut: new Date(),
-    label: "session",
+    name: "session",
+    montQuantity: 3,
+    price: 300,
     status: true,
   },
 ];

@@ -1,6 +1,6 @@
 export interface ISubscriptionType {
-  dateIn: Date;
-  dateOut: Date;
-  label: string;
+  name: string;
+  montQuantity: number;
+  price: number;
   status: boolean;
 }
