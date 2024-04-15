@@ -7,6 +7,7 @@ import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
 import { options } from "./config/swagger";
+import path from "path";
 
 // App initializations
 export const app: Application = express();
@@ -35,3 +36,6 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(specs));
 app.set("PORT", process.env.PORT || 3001);
 
 // Swagger Settings
+
+// Static Files
+app.use(express.static(path.join(__dirname, "./upload")));
