@@ -20,6 +20,4 @@ clientRoutes
 
 clientRoutes.get("/", checkJwt, allClient);
 
-clientRoutes.get("/", checkJwt, allClient);
-
 export default clientRoutes;
