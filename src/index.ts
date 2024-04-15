@@ -1,10 +1,11 @@
 import { app as server } from "./app";
 import { prisma } from "./db";
 import { insertAdminSeeder } from "./seeders/admin/admin.service";
-import { insertDisciSeeders } from "./seeders/discipline/genre.service";
+import { insertDisciSeeders } from "./seeders/discipline/discipline.service";
 import { insertClientSeeder } from "./seeders/client/client.service";
 import { insertGenreSeeders } from "./seeders/genre/genre.service";
 import { insertRoleSeeders } from "./seeders/role/role.service";
+import { insertSubsTypeSeeders } from "./seeders/subscriptionType/subscriptionType.service";
 
 // Get PORT
 const currentPort = server.get("PORT");
@@ -38,6 +39,11 @@ server.listen(currentPort, async () => {
   const isNotDisciEmpty = await prisma.discipline.count();
   if (!isNotDisciEmpty) {
     await insertDisciSeeders();
+  }
+
+  const isNotSubsTypeEmpty = await prisma.subsType.count();
+  if (!isNotSubsTypeEmpty) {
+    await insertSubsTypeSeeders();
   }
 
   console.log(`Server is running on PORT ${currentPort}...`);
