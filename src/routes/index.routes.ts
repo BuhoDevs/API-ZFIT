@@ -4,6 +4,7 @@ import userRoutes from "../user/user.routes";
 import clientRoutes from "../client/client.routes";
 import disciplineRoutes from "../discipline/discipline.routes";
 import genreRoutes from "../genre/genre.routes";
+import subsTypeRoutes from "../subscriptionType/substype.routes";
 
 const indexRoutes = Router();
 
@@ -17,5 +18,7 @@ indexRoutes.use("/genres", genreRoutes);
 
 //Discipline
 indexRoutes.use("/discipline", disciplineRoutes);
+
+indexRoutes.use("/substypes", subsTypeRoutes);
 
 export default indexRoutes;
