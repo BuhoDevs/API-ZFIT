@@ -101,6 +101,17 @@ model Subscription {
   Payment       Payment[]
 }
 
+
+model SubsType {
+  id     Int      @id @default(autoincrement())
+  name   String   @unique
+  label        String
+  montQuantity Int
+  price Int
+  status Boolean
+  Subscription Subscription[]
+}
+
 model Payment {
   id                 Int          @id @default(autoincrement())
   transactionAmmount Int
@@ -111,3 +122,4 @@ model Payment {
   Subscription       Subscription @relation(fields: [subscriptionId], references: [id])
   subscriptionId     Int
 }
+
