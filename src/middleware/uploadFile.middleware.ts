@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { Request, RequestHandler } from "express";
 import multer from "multer";
 import path from "path";
 
@@ -13,4 +13,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-export { upload };
+const singleUploadMiddleware: RequestHandler = upload.single("photo");
+
+export { singleUploadMiddleware };
