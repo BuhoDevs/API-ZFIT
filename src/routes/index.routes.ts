@@ -16,9 +16,8 @@ indexRoutes.use("/clients", clientRoutes);
 
 indexRoutes.use("/genres", genreRoutes);
 
-//Discipline
-indexRoutes.use("/discipline", disciplineRoutes);
+indexRoutes.use("/disciplines", disciplineRoutes);
 
-indexRoutes.use("/subscription", subscriptionRoutes);
+indexRoutes.use("/subscriptions", subscriptionRoutes);
 
 export default indexRoutes;

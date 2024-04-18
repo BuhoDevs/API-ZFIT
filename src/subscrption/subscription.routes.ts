@@ -4,6 +4,6 @@ import { checkJwt } from "../middleware/checkJWT";
 
 const clientRoutes = Router();
 
-clientRoutes.post("/register", checkJwt, suscripcion);
+clientRoutes.post("/", checkJwt, suscripcion);
 
 export default clientRoutes;

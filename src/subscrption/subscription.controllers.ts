@@ -3,21 +3,33 @@ import { Request, Response } from "express";
 import { suscripcionService } from "../subscrption/subscription.service";
 
 export async function suscripcion(req: Request, res: Response) {
-  const { dateIn, dateOut, status, label, disciplineId, clientId, subsTypeId } =
-    req.body;
+  const {
+    dateIn,
+    dateOut,
+    disciplineId,
+    clientId,
+    subsTypeId,
+    subscriptorId,
+    transactionAmmount,
+    discount,
+  } = req.body;
 
   try {
     const suscripcion = await suscripcionService({
       dateIn,
       dateOut,
-      status,
-      label,
       disciplineId,
       clientId,
       subsTypeId,
+      subscriptorId,
+      transactionAmmount,
+      discount,
     });
-    return res.json(suscripcion);
+    return res
+      .status(suscripcion.statuscode)
+      .json({ message: suscripcion.message });
   } catch (error) {
-    return res.status(500).json({ error: "Error interno del servidor" });
+    console.log("error de registro es ", error);
+    return res.status(500).json({ message: "Error de registro interno" });
   }
 }

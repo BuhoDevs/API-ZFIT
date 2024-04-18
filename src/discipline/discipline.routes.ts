@@ -9,16 +9,12 @@ import {
 
 const disciplineRoutes = Router();
 
-disciplineRoutes.post("/register", checkJwt, Discipline);
+disciplineRoutes.post("/", checkJwt, Discipline);
 
-disciplineRoutes.put("/edit/:disciplineId", checkJwt, editDiscipline);
+disciplineRoutes.put("/:disciplineId", checkJwt, editDiscipline);
 
-disciplineRoutes.put("/low/:disciplineId", checkJwt, lowDiscipline);
+disciplineRoutes.delete("/:disciplineId", checkJwt, lowDiscipline);
 
-disciplineRoutes.get(
-  "/all",
-  //checkJwt,
-  allDiscipline
-);
+disciplineRoutes.get("/", checkJwt, allDiscipline);
 
 export default disciplineRoutes;
