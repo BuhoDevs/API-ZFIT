@@ -1,5 +1,4 @@
 import { Decimal } from "@prisma/client/runtime/library";
-import { passwordHashado } from "../auth/helper/bcrypt";
 import { prisma } from "../db";
 import { getIsoDate } from "../utils";
 
@@ -16,12 +15,11 @@ export const insertClient = async (
   email: string | undefined,
   password: string | undefined
 ) => {
-  let encriptado = "";
   let isoBirthdate: string | undefined;
-  if (password) encriptado = await passwordHashado(password);
   if (birthdate) {
     isoBirthdate = getIsoDate(birthdate);
   }
+
   const newClient = await prisma.person.create({
     data: {
       firstname,
@@ -37,7 +35,7 @@ export const insertClient = async (
           height,
           status: true,
           email,
-          password: encriptado,
+          password,
         },
       },
     },

@@ -7,6 +7,9 @@ import {
   deleteClientByIdService,
 } from "./client.service";
 import { prisma } from "../db";
+import { passwordHashado } from "../auth/helper/bcrypt";
+
+const apiUrl = process.env.API_BASE_URL;
 
 export const clientRegister = async (req: Request, res: Response) => {
   const {
@@ -15,7 +18,6 @@ export const clientRegister = async (req: Request, res: Response) => {
     birthdate,
     ci,
     phone,
-    photo,
     genreId,
     weight,
     height,
@@ -29,24 +31,29 @@ export const clientRegister = async (req: Request, res: Response) => {
         .status(409)
         .json({ message: "Ya existe un Cliente con ese numero de documento" });
 
+    const photo = req.file ? `${apiUrl}/${req.file.filename}` : "";
+    let passEncriptado = "";
+    if (password) passEncriptado = await passwordHashado(password);
+
     const newclient = await insertClient(
       firstname,
       lastname,
       birthdate,
       ci,
-      phone,
+      Number(phone),
       photo,
-      genreId,
+      Number(genreId),
       weight,
       height,
       email,
-      password
+      passEncriptado
     );
 
     return res
       .status(newclient.statuscode)
       .json({ message: newclient.message });
   } catch (error) {
+    console.log("el error es ", error);
     return res.status(500).json({ error: "Error al registrar Cliente" });
   }
 };
