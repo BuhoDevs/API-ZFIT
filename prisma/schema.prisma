@@ -36,7 +36,7 @@ model Person {
   lastname  String
   birthdate DateTime?
   ci        String    @unique
-  status   Boolean  @default(true)
+  status    Boolean   @default(true)
   phone     Int?
   photo     String?
   User      User[]
@@ -44,25 +44,26 @@ model Person {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique
-  password String
-  status   Boolean
-  Role     Role?   @relation(fields: [roleId], references: [id])
-  roleId   Int?
-  Person   Person? @relation(fields: [personId], references: [id])
-  personId Int?
+  id           Int            @id @default(autoincrement())
+  email        String         @unique
+  password     String
+  status       Boolean
+  Role         Role?          @relation(fields: [roleId], references: [id])
+  roleId       Int?
+  Person       Person?        @relation(fields: [personId], references: [id])
+  personId     Int?
+  Subscription Subscription[]
 }
 
 model Client {
-  id       Int      @id @default(autoincrement())
-  Person   Person?  @relation(fields: [personId], references: [id])
-  personId Int?
-  weight   Decimal? @db.Decimal(6, 2)
-  height   Decimal? @db.Decimal(4, 2)
-  status   Boolean  @default(true)
-  email    String?
-  password String?
+  id           Int            @id @default(autoincrement())
+  Person       Person?        @relation(fields: [personId], references: [id])
+  personId     Int?
+  weight       Decimal?       @db.Decimal(6, 2)
+  height       Decimal?       @db.Decimal(4, 2)
+  status       Boolean        @default(true)
+  email        String?
+  password     String?
   Subscription Subscription[]
 }
 
@@ -74,19 +75,30 @@ model Discipline {
   Subscription Subscription[]
 }
 
-//falta complementar los datos segun se vayan creando las tablas
-model Subscription {
-  id           Int         @id @default(autoincrement())
-  dateIn       DateTime
-  dateOut      DateTime
-  status       Boolean
+model SubsType {
+  id           Int            @id @default(autoincrement())
+  name         String         @unique
   label        String
-  Discipline   Discipline? @relation(fields: [disciplineId], references: [id])
-  disciplineId Int?
-  Client       Client?     @relation(fields: [clientId], references: [id])
-  clientId     Int?
-  SubsType     SubsType?     @relation(fields: [subsTypeId], references: [id])
-  subsTypeId   Int?
+  montQuantity Int
+  price        Int
+  status       Boolean
+  Subscription Subscription[]
+}
+
+model Subscription {
+  id            Int        @id @default(autoincrement())
+  dateIn        DateTime
+  dateOut       DateTime
+  status        Boolean
+  Discipline    Discipline @relation(fields: [disciplineId], references: [id])
+  disciplineId  Int
+  Client        Client     @relation(fields: [clientId], references: [id])
+  clientId      Int
+  SubsType      SubsType   @relation(fields: [subsTypeId], references: [id])
+  subsTypeId    Int
+  User          User       @relation(fields: [subscriptorId], references: [id])
+  subscriptorId Int
+  Payment       Payment[]
 }
 
 
@@ -99,3 +111,15 @@ model SubsType {
   status Boolean
   Subscription Subscription[]
 }
+
+model Payment {
+  id                 Int          @id @default(autoincrement())
+  transactionAmmount Int
+  totalAmmount       Int
+  outstanding        Int?
+  discount           Int?
+  status             Boolean
+  Subscription       Subscription @relation(fields: [subscriptionId], references: [id])
+  subscriptionId     Int
+}
+
