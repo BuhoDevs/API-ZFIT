@@ -99,18 +99,34 @@ export const allClientService = async ({
     take,
     include: { Person: true },
   });
-  console.log("CI:SERV", client);
+
+  const totalLength = await prisma.client.count({
+    where: {
+      status: true,
+      Person: {
+        ...(ci && { ci }),
+        ...(firstname && {
+          firstname: { startsWith: firstname, mode: "insensitive" },
+        }),
+        ...(lastname && {
+          lastname: { startsWith: lastname, mode: "insensitive" },
+        }),
+      },
+    },
+  });
 
   if (!client) throw new Error("Error clientes no encontrados");
-  console.log(client);
-  return client.map((elem) => {
-    const { Person, password, ...resValues } = elem;
-    const { id, genreId, ...resPersonValues } = Person as Person;
-    return {
-      ...resValues,
-      ...resPersonValues,
-    };
-  });
+  return {
+    totalLength,
+    clients: client.map((elem) => {
+      const { Person, password, ...resValues } = elem;
+      const { id, genreId, ...resPersonValues } = Person as Person;
+      return {
+        ...resValues,
+        ...resPersonValues,
+      };
+    }),
+  };
 };
 
 export const deleteClientByIdService = async (clientId: number) => {
