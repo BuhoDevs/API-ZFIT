@@ -1,6 +1,8 @@
 import { Decimal } from "@prisma/client/runtime/library";
 import { prisma } from "../db";
 import { getIsoDate } from "../utils";
+import { Person } from "@prisma/client";
+import { IClientFilter } from "./types";
 
 export const insertClient = async (
   firstname: string,
@@ -73,14 +75,42 @@ export const getClientByIdService = async (id: number) => {
   return client;
 };
 
-export const allClientService = async () => {
-  const client = await prisma.person.findMany({
-    where: { status: true },
+export const allClientService = async ({
+  ci,
+  firstname,
+  lastname,
+  skip = 0,
+  take = 10,
+}: IClientFilter) => {
+  const client = await prisma.client.findMany({
+    where: {
+      status: true,
+      Person: {
+        ...(ci && { ci }),
+        ...(firstname && {
+          firstname: { startsWith: firstname, mode: "insensitive" },
+        }),
+        ...(lastname && {
+          lastname: { startsWith: lastname, mode: "insensitive" },
+        }),
+      },
+    },
+    skip,
+    take,
+    include: { Person: true },
   });
+  console.log("CI:SERV", client);
 
   if (!client) throw new Error("Error clientes no encontrados");
-
-  return client;
+  console.log(client);
+  return client.map((elem) => {
+    const { Person, password, ...resValues } = elem;
+    const { id, genreId, ...resPersonValues } = Person as Person;
+    return {
+      ...resValues,
+      ...resPersonValues,
+    };
+  });
 };
 
 export const deleteClientByIdService = async (clientId: number) => {
