@@ -1,20 +1,20 @@
 import { Router } from "express";
 import {
-  clientRegister,
-  updatedClient,
-  clientById,
   allClient,
+  clientById,
+  clientRegister,
   deleteClientById,
+  updatedClient,
 } from "../client/client.controllers";
 import { checkJwt } from "../middleware/checkJWT";
-import { upload } from "../middleware/uploadFile.middleware";
+import { singleUploadMiddleware } from "../middleware/uploadFile.middleware";
 
 const clientRoutes = Router();
 
 clientRoutes.post(
   "/register",
-  //checkJwt,
-  upload.single("photo"),
+  checkJwt,
+  singleUploadMiddleware,
   clientRegister
 );
 
