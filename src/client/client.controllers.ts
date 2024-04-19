@@ -8,6 +8,7 @@ import {
 } from "./client.service";
 import { prisma } from "../db";
 import { passwordHashado } from "../auth/helper/bcrypt";
+import { getOffSet } from "../utilities/pagination";
 
 const apiUrl = process.env.API_BASE_URL;
 
@@ -102,10 +103,20 @@ export const clientById = async (req: Request, res: Response) => {
   }
 };
 
-export const allClient = async (_req: Request, res: Response) => {
+export const allClient = async (req: Request, res: Response) => {
+  const { ci, firstname, lastname, skip, take } = req.body;
+  console.log("CI:CTRL", ci);
+
   try {
-    const client = await allClientService();
-    return res.json({ message: "Clientes encontrados correctamente", client });
+    const offSetBySkip = getOffSet({ skip, take });
+    const client = await allClientService({
+      ci,
+      firstname,
+      lastname,
+      take,
+      skip: offSetBySkip,
+    });
+    return res.json(client);
   } catch (error) {
     return res.status(500).json({ error: "Error clientes no encontrados" });
   }

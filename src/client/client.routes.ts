@@ -24,6 +24,6 @@ clientRoutes
   .put(checkJwt, updatedClient)
   .delete(checkJwt, deleteClientById);
 
-clientRoutes.get("/", checkJwt, allClient);
+clientRoutes.post("/", checkJwt, allClient);
 
 export default clientRoutes;
