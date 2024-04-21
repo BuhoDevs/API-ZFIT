@@ -105,7 +105,6 @@ export const clientById = async (req: Request, res: Response) => {
 
 export const allClient = async (req: Request, res: Response) => {
   const { ci, firstname, lastname, skip, take } = req.body;
-  console.log("CI:CTRL", ci);
 
   try {
     const offSetBySkip = getOffSet({ skip, take });

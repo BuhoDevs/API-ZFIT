@@ -79,8 +79,8 @@ export const allClientService = async ({
   ci,
   firstname,
   lastname,
-  skip = 0,
-  take = 10,
+  skip,
+  take,
 }: IClientFilter) => {
   const client = await prisma.client.findMany({
     where: {
@@ -115,7 +115,6 @@ export const allClientService = async ({
     },
   });
 
-  if (!client) throw new Error("Error clientes no encontrados");
   return {
     totalLength,
     clients: client.map((elem) => {
