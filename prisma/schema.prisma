@@ -99,6 +99,7 @@ model Subscription {
   User          User       @relation(fields: [subscriptorId], references: [id])
   subscriptorId Int
   Payment       Payment[]
+  createdAt     DateTime   @default(now()) @db.Timestamptz(6)
 }
 
 model Payment {
