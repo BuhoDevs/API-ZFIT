@@ -9,10 +9,6 @@ const clientRoutes = Router();
 
 clientRoutes.post("/", checkJwt, suscripcion);
 
-clientRoutes.post(
-  "/filters",
-  //checkJwt,
-  allSuscripcion
-);
+clientRoutes.post("/filters", checkJwt, allSuscripcion);
 
 export default clientRoutes;
