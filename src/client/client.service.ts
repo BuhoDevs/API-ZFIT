@@ -65,9 +65,9 @@ export const updateClientService = async (id: number, clientData: any) => {
 };
 
 export const getClientByIdService = async (id: number) => {
-  const client = await prisma.person.findUnique({
+  const client = await prisma.client.findUnique({
     where: { id },
-    include: { Client: true },
+    include: { Person: true },
   });
 
   if (!client) throw new Error("Error cliente no encontrado");
