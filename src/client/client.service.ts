@@ -86,7 +86,12 @@ export const allClientService = async ({
     where: {
       status: true,
       Person: {
-        ...(ci && { ci }),
+        ...(ci && {
+          ci: {
+            startsWith: ci,
+            mode: "insensitive",
+          },
+        }),
         ...(firstname && {
           firstname: { startsWith: firstname, mode: "insensitive" },
         }),
