@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 
 import {
-  allSuscripcionService,
-  suscripcionService,
+  allSuscriptionService,
+  suscriptionService,
 } from "../subscrption/subscription.service";
 import { getOffSet } from "../utilities/pagination";
 
-export async function suscripcion(req: Request, res: Response) {
+export async function suscription(req: Request, res: Response) {
   const {
     dateIn,
     dateOut,
@@ -15,11 +15,12 @@ export async function suscripcion(req: Request, res: Response) {
     subsTypeId,
     subscriptorId,
     transactionAmmount,
-    discount,
+    outstanding,
+    totalAmmount,
   } = req.body;
 
   try {
-    const suscripcion = await suscripcionService({
+    const suscription = await suscriptionService({
       dateIn,
       dateOut,
       disciplineId,
@@ -27,23 +28,24 @@ export async function suscripcion(req: Request, res: Response) {
       subsTypeId,
       subscriptorId,
       transactionAmmount,
-      discount,
+      outstanding,
+      totalAmmount,
     });
     return res
-      .status(suscripcion.statuscode)
-      .json({ message: suscripcion.message });
+      .status(suscription.statuscode)
+      .json({ message: suscription.message });
   } catch (error) {
     console.log("error de registro es ", error);
     return res.status(500).json({ message: "Error de registro interno" });
   }
 }
 
-export async function allSuscripcion(req: Request, res: Response) {
+export async function allSuscription(req: Request, res: Response) {
   const {
     disciplineId,
     ci,
-    firstName,
-    lastName,
+    firstname,
+    lastname,
     subsTypeId,
     subscriptorId,
     dateIn,
@@ -55,11 +57,11 @@ export async function allSuscripcion(req: Request, res: Response) {
 
   try {
     const offSetBySkip = getOffSet({ skip, take });
-    const allSuscripcion = await allSuscripcionService({
+    const allSuscription = await allSuscriptionService({
       disciplineId,
       ci,
-      firstName,
-      lastName,
+      firstname,
+      lastname,
       subsTypeId,
       subscriptorId,
       dateIn,
@@ -68,10 +70,7 @@ export async function allSuscripcion(req: Request, res: Response) {
       take,
       skip: offSetBySkip,
     });
-    return res.json({
-      code: 200,
-      data: allSuscripcion,
-    });
+    return res.json(allSuscription);
   } catch (error) {
     console.log("error al obtener la lista ", error);
     return res.status(500).json({ message: "Error al obtener la lista" });

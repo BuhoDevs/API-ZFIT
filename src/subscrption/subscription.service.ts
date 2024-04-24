@@ -2,7 +2,17 @@ import { prisma } from "../db";
 import { getIsoDate } from "../utils";
 import { ISubscriptionFilter } from "./types";
 
-export async function suscripcionService(data: {
+export async function suscriptionService({
+  dateIn,
+  dateOut,
+  disciplineId,
+  clientId,
+  subsTypeId,
+  subscriptorId,
+  transactionAmmount,
+  outstanding = 0,
+  totalAmmount,
+}: {
   dateIn: string;
   dateOut: string;
   disciplineId: number;
@@ -10,32 +20,32 @@ export async function suscripcionService(data: {
   subsTypeId: number;
   subscriptorId: number;
   transactionAmmount: number;
-  discount: number | undefined;
+  outstanding: number;
+  totalAmmount: number;
 }) {
-  let isoDateIn = getIsoDate(data.dateIn);
-  let isoDateOut = getIsoDate(data.dateOut);
-  let total = 0;
-  const subsType = await prisma.subsType.findFirst({
-    where: { id: data.subsTypeId },
-  });
-  if (subsType) total = subsType.price;
-  else total = 0;
+  let isoDateIn = getIsoDate(dateIn);
+  let isoDateOut = getIsoDate(dateOut);
+  // let total = 0;
+  // const subsType = await prisma.subsType.findFirst({
+  //   where: { id: subsTypeId },
+  // });
+  // if (subsType) total = subsType.price;
+  // else total = 0;
 
   const suscripcion = await prisma.subscription.create({
     data: {
       dateIn: isoDateIn,
       dateOut: isoDateOut,
       status: true,
-      disciplineId: data.disciplineId,
-      clientId: data.clientId,
-      subsTypeId: data.subsTypeId,
-      subscriptorId: data.subscriptorId,
+      disciplineId: disciplineId,
+      clientId: clientId,
+      subsTypeId: subsTypeId,
+      subscriptorId: subscriptorId,
       Payment: {
         create: {
-          transactionAmmount: data.transactionAmmount,
-          totalAmmount: total,
-          outstanding: total - data.transactionAmmount,
-          discount: data.discount,
+          transactionAmmount: transactionAmmount,
+          totalAmmount: totalAmmount,
+          outstanding: outstanding,
           status: true,
         },
       },
@@ -52,11 +62,11 @@ export async function suscripcionService(data: {
   return { message: "Registro de Suscripción con éxito", statuscode: 200 };
 }
 
-export async function allSuscripcionService({
+export async function allSuscriptionService({
   disciplineId,
   ci,
-  firstName,
-  lastName,
+  firstname,
+  lastname,
   subsTypeId,
   subscriptorId,
   dateIn,
@@ -79,11 +89,11 @@ export async function allSuscripcionService({
       Client: {
         Person: {
           ...(ci && { ci }),
-          ...(firstName && {
-            firstName: { startsWith: firstName, mode: "insensitive" },
+          ...(firstname && {
+            firstname: { startsWith: firstname, mode: "insensitive" },
           }),
-          ...(lastName && {
-            lastName: { startsWith: lastName, mode: "insensitive" },
+          ...(lastname && {
+            lastname: { startsWith: lastname, mode: "insensitive" },
           }),
         },
       },
@@ -111,11 +121,11 @@ export async function allSuscripcionService({
       Client: {
         Person: {
           ...(ci && { ci }),
-          ...(firstName && {
-            firstName: { startsWith: firstName, mode: "insensitive" },
+          ...(firstname && {
+            firstname: { startsWith: firstname, mode: "insensitive" },
           }),
-          ...(lastName && {
-            lastName: { startsWith: lastName, mode: "insensitive" },
+          ...(lastname && {
+            lastname: { startsWith: lastname, mode: "insensitive" },
           }),
         },
       },

@@ -1,14 +1,14 @@
 import { Router } from "express";
 import {
-  allSuscripcion,
-  suscripcion,
+  allSuscription,
+  suscription,
 } from "../subscrption/subscription.controllers";
 import { checkJwt } from "../middleware/checkJWT";
 
 const clientRoutes = Router();
 
-clientRoutes.post("/", checkJwt, suscripcion);
+clientRoutes.post("/", checkJwt, suscription);
 
-clientRoutes.post("/filters", checkJwt, allSuscripcion);
+clientRoutes.post("/filters", checkJwt, allSuscription);
 
 export default clientRoutes;

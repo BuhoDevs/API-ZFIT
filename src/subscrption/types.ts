@@ -1,8 +1,8 @@
 export interface ISubscriptionFilter {
   disciplineId?: number;
   ci?: string;
-  firstName?: string;
-  lastName?: string;
+  firstname?: string;
+  lastname?: string;
   subsTypeId?: number;
   subscriptorId?: number;
   dateIn?: string;
