@@ -97,7 +97,7 @@ export const clientById = async (req: Request, res: Response) => {
 
   try {
     const client = await getClientByIdService(+id);
-    return res.json({ message: "Cliente encontrado correctamente", client });
+    return res.json(client);
   } catch (error) {
     return res.status(500).json({ error: "Error cliente no encontrado" });
   }

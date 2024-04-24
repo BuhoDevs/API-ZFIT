@@ -48,6 +48,8 @@ export const deleteSubscriptionTypes = async (id: number) => {
 };
 
 export const getAllSubscriptionTypes = async () => {
-  const subscriptionTypes = await prisma.subsType.findMany();
-  return subscriptionTypes;
+  return (await prisma.subsType.findMany()).map((elem) => ({
+    ...elem,
+    value: elem.id,
+  }));
 };
