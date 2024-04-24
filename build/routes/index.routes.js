@@ -1,0 +1,22 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_routes_1 = __importDefault(require("../auth/auth.routes"));
+const user_routes_1 = __importDefault(require("../user/user.routes"));
+const client_routes_1 = __importDefault(require("../client/client.routes"));
+const discipline_routes_1 = __importDefault(require("../discipline/discipline.routes"));
+const genre_routes_1 = __importDefault(require("../genre/genre.routes"));
+const substype_routes_1 = __importDefault(require("../subscriptionType/substype.routes"));
+const subscription_routes_1 = __importDefault(require("../subscrption/subscription.routes"));
+const indexRoutes = (0, express_1.Router)();
+indexRoutes.use("/auth", auth_routes_1.default);
+indexRoutes.use("/users", user_routes_1.default);
+indexRoutes.use("/clients", client_routes_1.default);
+indexRoutes.use("/genres", genre_routes_1.default);
+indexRoutes.use("/disciplines", discipline_routes_1.default);
+indexRoutes.use("/subscriptions", subscription_routes_1.default);
+indexRoutes.use("/substypes", substype_routes_1.default);
+exports.default = indexRoutes;
