@@ -60,6 +60,7 @@ export const updateClientService = async (id: number, clientData: any) => {
   const updatedClient = await prisma.client.update({
     where: { id },
     data: clientData,
+    include: { Person: true },
   });
   return updatedClient;
 };
