@@ -57,7 +57,7 @@ export const insertClient = async (
 };
 
 export const updateClientService = async (id: number, clientData: any) => {
-  const updatedClient = await prisma.person.update({
+  const updatedClient = await prisma.client.update({
     where: { id },
     data: clientData,
   });

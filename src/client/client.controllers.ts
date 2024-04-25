@@ -61,11 +61,11 @@ export const clientRegister = async (req: Request, res: Response) => {
 
 export const updatedClient = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  const { firstname, lastname, birthdate, ci, phone, photo, genreId } =
-    req.body;
+  // const { firstname, lastname, birthdate, ci, phone, photo, genreId } = req.body;
+  const { personId, weight, height, email, password } = req.body;
 
   try {
-    const existingClient = await prisma.person.findUnique({
+    const existingClient = await prisma.client.findUnique({
       where: { id },
     });
 
@@ -74,13 +74,18 @@ export const updatedClient = async (req: Request, res: Response) => {
     }
 
     const updatedClient = await updateClientService(id, {
-      firstname,
-      lastname,
-      birthdate: birthdate ? new Date(birthdate) : undefined,
-      ci,
-      phone,
-      photo,
-      genreId,
+      // firstname,
+      // lastname,
+      // birthdate: birthdate ? new Date(birthdate) : undefined,
+      // ci,
+      // phone,
+      // photo,
+      // genreId,
+      personId,
+      weight,
+      height,
+      email,
+      password,
     });
 
     return res.json({
