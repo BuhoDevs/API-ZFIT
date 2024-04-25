@@ -1,8 +1,8 @@
 import { Decimal } from "@prisma/client/runtime/library";
 import { prisma } from "../db";
 import { getIsoDate } from "../utils";
-import { Person } from "@prisma/client";
 import { IClientFilter } from "./types";
+import { Person } from "@prisma/client";
 
 export const insertClient = async (
   firstname: string,
@@ -57,10 +57,44 @@ export const insertClient = async (
 };
 
 export const updateClientService = async (id: number, clientData: any) => {
+  const {
+    genreId,
+    firstname,
+    lastname,
+    birthdate,
+    ci,
+    phone,
+    photo,
+    personId,
+    weight,
+    height,
+    email,
+    password,
+  } = clientData;
+
   const updatedClient = await prisma.client.update({
     where: { id },
-    data: clientData,
-    include: { Person: true },
+    data: {
+      personId,
+      weight,
+      height,
+      email,
+      password,
+      Person: {
+        update: {
+          genreId,
+          firstname,
+          lastname,
+          birthdate,
+          ci,
+          phone,
+          photo,
+        },
+      },
+    },
+    include: {
+      Person: true,
+    },
   });
   return updatedClient;
 };
