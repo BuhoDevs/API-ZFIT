@@ -111,9 +111,9 @@ export const updatedClient = async (req: Request, res: Response) => {
 
 export const clientById = async (req: Request, res: Response) => {
   const { id } = req.params;
-
   try {
     const client = await getClientByIdService(+id);
+
     return res.json(client);
   } catch (error) {
     return res.status(500).json({ error: "Error cliente no encontrado" });
