@@ -77,6 +77,11 @@ export const updateClientService = async (id: number, clientData: any) => {
     password,
   } = clientData;
 
+  let isoBirthdate: string | undefined;
+  if (birthdate) {
+    isoBirthdate = getIsoDate(birthdate);
+  }
+
   const updatedClient = await prisma.client.update({
     where: { id },
     data: {
@@ -90,7 +95,7 @@ export const updateClientService = async (id: number, clientData: any) => {
           genreId,
           firstname,
           lastname,
-          birthdate,
+          ...(isoBirthdate && { birthdate: isoBirthdate }),
           ci,
           phone,
           photo,
