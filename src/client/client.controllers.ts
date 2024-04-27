@@ -144,10 +144,7 @@ export const deleteClientById = async (req: Request, res: Response) => {
   try {
     const deletedClient = await deleteClientByIdService(+id);
 
-    return res.json({
-      message: "Cliente eliminado correctamente",
-      client: deletedClient,
-    });
+    return res.json(deletedClient);
   } catch (error) {
     return res.status(500).json({ error: "Error al eliminar el cliente" });
   }
