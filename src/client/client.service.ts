@@ -1,8 +1,10 @@
 import { Decimal } from "@prisma/client/runtime/library";
 import { prisma } from "../db";
 import { getIsoDate } from "../utils";
-import { Person } from "@prisma/client";
 import { IClientFilter } from "./types";
+import { Person } from "@prisma/client";
+import { IGenre } from "../seeders/genre/types";
+// import { IGenre } from "../seeders/genre/types";
 
 export const insertClient = async (
   firstname: string,
@@ -47,7 +49,10 @@ export const insertClient = async (
   });
 
   if (!newClient)
-    return { message: "Error en el registro de Cliente", statuscode: 409 };
+    return {
+      message: "Error en el registro de Cliente",
+      statuscode: 409,
+    };
 
   return {
     message: "Registro de Cliente con éxito",
@@ -57,9 +62,44 @@ export const insertClient = async (
 };
 
 export const updateClientService = async (id: number, clientData: any) => {
-  const updatedClient = await prisma.person.update({
+  const {
+    genreId,
+    firstname,
+    lastname,
+    birthdate,
+    ci,
+    phone,
+    photo,
+    personId,
+    weight,
+    height,
+    email,
+    password,
+  } = clientData;
+
+  const updatedClient = await prisma.client.update({
     where: { id },
-    data: clientData,
+    data: {
+      personId,
+      weight,
+      height,
+      email,
+      password,
+      Person: {
+        update: {
+          genreId,
+          firstname,
+          lastname,
+          birthdate,
+          ci,
+          phone,
+          photo,
+        },
+      },
+    },
+    include: {
+      Person: true,
+    },
   });
   return updatedClient;
 };
@@ -67,12 +107,41 @@ export const updateClientService = async (id: number, clientData: any) => {
 export const getClientByIdService = async (id: number) => {
   const client = await prisma.client.findUnique({
     where: { id },
-    include: { Person: true },
+    include: {
+      Person: {
+        select: {
+          id: true,
+          firstname: true,
+          lastname: true,
+          birthdate: true,
+          ci: true,
+          phone: true,
+          photo: true,
+          genreId: true,
+          Genre: true,
+        },
+      },
+    },
   });
 
   if (!client) throw new Error("Error cliente no encontrado");
 
-  return client;
+  const { Genre, ...personWithoutGenre } = client.Person || {};
+
+  const genre = client.Person?.Genre;
+
+  let genreValue: IGenre | undefined;
+  if (genre) {
+    genreValue = { ...genre, value: genre.id };
+  }
+
+  return {
+    ...client,
+    Person: {
+      Person: personWithoutGenre,
+      Genre: genreValue,
+    },
+  };
 };
 
 export const allClientService = async ({

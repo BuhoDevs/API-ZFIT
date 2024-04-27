@@ -61,11 +61,23 @@ export const clientRegister = async (req: Request, res: Response) => {
 
 export const updatedClient = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  const { firstname, lastname, birthdate, ci, phone, photo, genreId } =
-    req.body;
+  const {
+    genreId,
+    firstname,
+    lastname,
+    birthdate,
+    ci,
+    phone,
+    photo,
+    personId,
+    weight,
+    height,
+    email,
+    password,
+  } = req.body;
 
   try {
-    const existingClient = await prisma.person.findUnique({
+    const existingClient = await prisma.client.findUnique({
       where: { id },
     });
 
@@ -74,13 +86,18 @@ export const updatedClient = async (req: Request, res: Response) => {
     }
 
     const updatedClient = await updateClientService(id, {
+      genreId,
       firstname,
       lastname,
       birthdate: birthdate ? new Date(birthdate) : undefined,
       ci,
       phone,
       photo,
-      genreId,
+      personId,
+      weight,
+      height,
+      email,
+      password,
     });
 
     return res.json({
@@ -94,9 +111,9 @@ export const updatedClient = async (req: Request, res: Response) => {
 
 export const clientById = async (req: Request, res: Response) => {
   const { id } = req.params;
-
   try {
     const client = await getClientByIdService(+id);
+
     return res.json(client);
   } catch (error) {
     return res.status(500).json({ error: "Error cliente no encontrado" });
