@@ -1,6 +1,6 @@
 import { prisma } from "../db";
 import { getIsoDate } from "../utils";
-import { ISubscriptionFilter } from "./types";
+import { IGetSubscription, ISubscriptionFilter } from "./types";
 
 export async function suscriptionService({
   dateIn,
@@ -141,3 +141,40 @@ export async function allSuscriptionService({
     subscriptions,
   };
 }
+
+export const findSuscriptionById = async ({
+  subscripcionId,
+}: IGetSubscription) => {
+  const subscriptionFounded = await prisma.subscription.findUnique({
+    where: { id: subscripcionId },
+    include: {
+      Client: { select: { Person: true } },
+      Discipline: true,
+      Payment: true,
+      SubsType: true,
+    },
+  });
+
+  if (!subscriptionFounded) {
+    return {
+      code: 404,
+      message: "La suscripcion no fue encontrada",
+      error: true,
+    };
+  }
+
+  return {
+    code: 200,
+    data: {
+      ...subscriptionFounded,
+      Discipline: {
+        ...subscriptionFounded.Discipline,
+        value: subscriptionFounded.Discipline.id,
+      },
+      SubsType: {
+        ...subscriptionFounded.SubsType,
+        value: subscriptionFounded.SubsType.id,
+      },
+    },
+  };
+};

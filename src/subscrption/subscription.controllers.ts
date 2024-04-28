@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 
 import {
   allSuscriptionService,
+  findSuscriptionById,
   suscriptionService,
 } from "../subscrption/subscription.service";
 import { getOffSet } from "../utilities/pagination";
@@ -76,3 +77,27 @@ export async function allSuscription(req: Request, res: Response) {
     return res.status(500).json({ message: "Error al obtener la lista" });
   }
 }
+
+export const getSubscriptionById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res
+        .status(400)
+        .json({ message: "El id de suscripcion es requerido" });
+    }
+
+    const subscription = await findSuscriptionById({ subscripcionId: +id });
+    if (subscription.error) {
+      return res
+        .status(subscription.code)
+        .json({ message: subscription.message });
+    }
+
+    return res.status(subscription.code).json(subscription.data);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "No se pudo obtener la Suscipción", error });
+  }
+};
