@@ -11,3 +11,7 @@ export interface ISubscriptionFilter {
   skip: number;
   take: number;
 }
+
+export interface IGetSubscription {
+  subscripcionId: number;
+}
