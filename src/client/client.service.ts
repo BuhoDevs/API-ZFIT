@@ -184,7 +184,6 @@ export const allClientService = async ({
             Subscription: {
               where: { status: true },
               select: { Discipline: true },
-              //include: { Discipline: true },
             },
           }
         : {}),
