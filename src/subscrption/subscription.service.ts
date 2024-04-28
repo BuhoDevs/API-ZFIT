@@ -2,7 +2,7 @@ import { prisma } from "../db";
 import { getIsoDate } from "../utils";
 import { IGetSubscription, ISubscriptionFilter } from "./types";
 
-export async function suscriptionService({
+export async function subscriptionService({
   dateIn,
   dateOut,
   disciplineId,
@@ -25,14 +25,8 @@ export async function suscriptionService({
 }) {
   let isoDateIn = getIsoDate(dateIn);
   let isoDateOut = getIsoDate(dateOut);
-  // let total = 0;
-  // const subsType = await prisma.subsType.findFirst({
-  //   where: { id: subsTypeId },
-  // });
-  // if (subsType) total = subsType.price;
-  // else total = 0;
 
-  const suscripcion = await prisma.subscription.create({
+  const subscription = await prisma.subscription.create({
     data: {
       dateIn: isoDateIn,
       dateOut: isoDateOut,
@@ -54,7 +48,7 @@ export async function suscriptionService({
       Payment: true,
     },
   });
-  if (!suscripcion)
+  if (!subscription)
     return {
       message: "Error en el registro de la Suscripción",
       statuscode: 409,
@@ -62,7 +56,7 @@ export async function suscriptionService({
   return { message: "Registro de Suscripción con éxito", statuscode: 200 };
 }
 
-export async function allSuscriptionService({
+export async function allSubscriptionService({
   disciplineId,
   ci,
   firstname,

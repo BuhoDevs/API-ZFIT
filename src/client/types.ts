@@ -4,4 +4,5 @@ export interface IClientFilter {
   lastname?: string;
   skip: number;
   take: number;
+  banClieSubs: boolean;
 }

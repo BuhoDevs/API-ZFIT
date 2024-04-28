@@ -121,7 +121,7 @@ export const clientById = async (req: Request, res: Response) => {
 };
 
 export const allClient = async (req: Request, res: Response) => {
-  const { ci, firstname, lastname, skip, take } = req.body;
+  const { ci, firstname, lastname, skip, take, banClieSubs } = req.body;
 
   try {
     const offSetBySkip = getOffSet({ skip, take });
@@ -131,6 +131,7 @@ export const allClient = async (req: Request, res: Response) => {
       lastname,
       take,
       skip: offSetBySkip,
+      banClieSubs,
     });
     return res.json(client);
   } catch (error) {

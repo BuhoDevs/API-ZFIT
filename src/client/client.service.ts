@@ -155,6 +155,7 @@ export const allClientService = async ({
   lastname,
   skip,
   take,
+  banClieSubs,
 }: IClientFilter) => {
   const client = await prisma.client.findMany({
     where: {
@@ -176,7 +177,17 @@ export const allClientService = async ({
     },
     skip,
     take,
-    include: { Person: true },
+    include: {
+      Person: true,
+      ...(banClieSubs
+        ? {
+            Subscription: {
+              where: { status: true },
+              select: { Discipline: true },
+            },
+          }
+        : {}),
+    },
   });
 
   const totalLength = await prisma.client.count({
@@ -197,11 +208,13 @@ export const allClientService = async ({
   return {
     totalLength,
     clients: client.map((elem) => {
-      const { Person, password, ...resValues } = elem;
+      const { Person, password, Subscription, ...resValues } = elem;
       const { id, genreId, ...resPersonValues } = Person as Person;
+
       return {
         ...resValues,
         ...resPersonValues,
+        Subscription: Subscription.map((ele: any) => ele.Discipline.label),
       };
     }),
   };
