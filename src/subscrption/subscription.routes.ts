@@ -6,12 +6,12 @@ import {
 } from "../subscrption/subscription.controllers";
 import { checkJwt } from "../middleware/checkJWT";
 
-const clientRoutes = Router();
+const subscriptionRoutes = Router();
 
-clientRoutes.post("/", checkJwt, subscription);
+subscriptionRoutes.post("/", checkJwt, subscription);
 
-clientRoutes.post("/filters", checkJwt, allSubscription);
+subscriptionRoutes.post("/filters", checkJwt, allSubscription);
 
-clientRoutes.get("/:id", checkJwt, getSubscriptionById);
+subscriptionRoutes.get("/:id", checkJwt, getSubscriptionById);
 
-export default clientRoutes;
+export default subscriptionRoutes;
