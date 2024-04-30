@@ -4,6 +4,7 @@ import {
   findSuscriptionById,
   allSubscriptionService,
   subscriptionService,
+  subscriptionEdit,
 } from "../subscrption/subscription.service";
 import { getOffSet } from "../utilities/pagination";
 
@@ -99,5 +100,51 @@ export const getSubscriptionById = async (req: Request, res: Response) => {
     return res
       .status(500)
       .json({ message: "No se pudo obtener la Suscipción", error });
+  }
+};
+
+export const editSubscription = async (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  const {
+    dateIn,
+    dateOut,
+    disciplineId,
+    clientId,
+    subsTypeId,
+    subscriptorId,
+    transactionAmmount,
+    outstanding,
+    totalAmmount,
+  } = req.body;
+  try {
+    if (!id) {
+      return res
+        .status(400)
+        .json({ message: "El ID de suscripción es requerdio" });
+    }
+    const existingSubscription = findSuscriptionById({ subscripcionId: +id });
+    if (!existingSubscription)
+      return res.status(404).json({ message: "La suscripción no existe" });
+
+    const subscripEdit = await subscriptionEdit({
+      id,
+      dateIn,
+      dateOut,
+      disciplineId,
+      clientId,
+      subsTypeId,
+      subscriptorId,
+      transactionAmmount,
+      outstanding,
+      totalAmmount,
+    });
+
+    return res.json({
+      message: "Suscripción actualizado correctamente",
+      subscripEdit,
+    });
+  } catch (error) {
+    console.error("Error modificar Suscripción:", error);
+    return res.status(500).json({ error: "Error al modificar la Suscripción" });
   }
 };
