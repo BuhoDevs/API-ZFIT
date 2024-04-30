@@ -40,22 +40,27 @@ const clientRegister = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.clientRegister = clientRegister;
 const updatedClient = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = parseInt(req.params.id);
-    const { firstname, lastname, birthdate, ci, phone, photo, genreId } = req.body;
+    const { genreId, firstname, lastname, birthdate, ci, phone, photo, personId, weight, height, email, password, } = req.body;
     try {
-        const existingClient = yield db_1.prisma.person.findUnique({
+        const existingClient = yield db_1.prisma.client.findUnique({
             where: { id },
         });
         if (!existingClient) {
             return res.status(404).json({ message: "El cliente no existe" });
         }
         const updatedClient = yield (0, client_service_1.updateClientService)(id, {
+            genreId,
             firstname,
             lastname,
             birthdate: birthdate ? new Date(birthdate) : undefined,
             ci,
             phone,
             photo,
-            genreId,
+            personId,
+            weight,
+            height,
+            email,
+            password,
         });
         return res.json({
             message: "Cliente actualizado correctamente",
@@ -79,7 +84,7 @@ const clientById = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.clientById = clientById;
 const allClient = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { ci, firstname, lastname, skip, take } = req.body;
+    const { ci, firstname, lastname, skip, take, banClieSubs } = req.body;
     try {
         const offSetBySkip = (0, pagination_1.getOffSet)({ skip, take });
         const client = yield (0, client_service_1.allClientService)({
@@ -88,6 +93,7 @@ const allClient = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             lastname,
             take,
             skip: offSetBySkip,
+            banClieSubs,
         });
         return res.json(client);
     }
@@ -100,10 +106,7 @@ const deleteClientById = (req, res) => __awaiter(void 0, void 0, void 0, functio
     const { id } = req.params;
     try {
         const deletedClient = yield (0, client_service_1.deleteClientByIdService)(+id);
-        return res.json({
-            message: "Cliente eliminado correctamente",
-            client: deletedClient,
-        });
+        return res.json(deletedClient);
     }
     catch (error) {
         return res.status(500).json({ error: "Error al eliminar el cliente" });
