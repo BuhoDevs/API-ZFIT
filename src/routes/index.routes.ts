@@ -6,9 +6,7 @@ import disciplineRoutes from "../discipline/discipline.routes";
 import genreRoutes from "../genre/genre.routes";
 
 import subsTypeRoutes from "../subscriptionType/substype.routes";
-
 import subscriptionRoutes from "../subscrption/subscription.routes";
-
 
 const indexRoutes = Router();
 

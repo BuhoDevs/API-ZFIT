@@ -9,14 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.allSuscription = exports.suscription = void 0;
+exports.getSubscriptionById = exports.allSubscription = exports.subscription = void 0;
 const subscription_service_1 = require("../subscrption/subscription.service");
 const pagination_1 = require("../utilities/pagination");
-function suscription(req, res) {
+function subscription(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { dateIn, dateOut, disciplineId, clientId, subsTypeId, subscriptorId, transactionAmmount, outstanding, totalAmmount, } = req.body;
         try {
-            const suscription = yield (0, subscription_service_1.suscriptionService)({
+            const subscription = yield (0, subscription_service_1.subscriptionService)({
                 dateIn,
                 dateOut,
                 disciplineId,
@@ -28,8 +28,8 @@ function suscription(req, res) {
                 totalAmmount,
             });
             return res
-                .status(suscription.statuscode)
-                .json({ message: suscription.message });
+                .status(subscription.statuscode)
+                .json({ message: subscription.message });
         }
         catch (error) {
             console.log("error de registro es ", error);
@@ -37,13 +37,13 @@ function suscription(req, res) {
         }
     });
 }
-exports.suscription = suscription;
-function allSuscription(req, res) {
+exports.subscription = subscription;
+function allSubscription(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { disciplineId, ci, firstname, lastname, subsTypeId, subscriptorId, dateIn, dateOut, status, take, skip, } = req.body;
         try {
             const offSetBySkip = (0, pagination_1.getOffSet)({ skip, take });
-            const allSuscription = yield (0, subscription_service_1.allSuscriptionService)({
+            const allSubscription = yield (0, subscription_service_1.allSubscriptionService)({
                 disciplineId,
                 ci,
                 firstname,
@@ -56,7 +56,7 @@ function allSuscription(req, res) {
                 take,
                 skip: offSetBySkip,
             });
-            return res.json(allSuscription);
+            return res.json(allSubscription);
         }
         catch (error) {
             console.log("error al obtener la lista ", error);
@@ -64,4 +64,27 @@ function allSuscription(req, res) {
         }
     });
 }
-exports.allSuscription = allSuscription;
+exports.allSubscription = allSubscription;
+const getSubscriptionById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res
+                .status(400)
+                .json({ message: "El id de suscripcion es requerido" });
+        }
+        const subscription = yield (0, subscription_service_1.findSuscriptionById)({ subscripcionId: +id });
+        if (subscription.error) {
+            return res
+                .status(subscription.code)
+                .json({ message: subscription.message });
+        }
+        return res.status(subscription.code).json(subscription.data);
+    }
+    catch (error) {
+        return res
+            .status(500)
+            .json({ message: "No se pudo obtener la Suscipción", error });
+    }
+});
+exports.getSubscriptionById = getSubscriptionById;

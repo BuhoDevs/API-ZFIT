@@ -139,6 +139,12 @@ export const editSubscription = async (req: Request, res: Response) => {
       totalAmmount,
     });
 
+    if (!subscripEdit) {
+      return res
+        .status(409)
+        .json({ message: "Error al modificar la suscripción" });
+    }
+
     return res.json({
       message: "Suscripción actualizado correctamente",
       subscripEdit,

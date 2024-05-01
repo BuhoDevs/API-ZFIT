@@ -1,3 +1,4 @@
+import { findPaymentBysubscriptionId } from "../Payment/payment.service";
 import { prisma } from "../db";
 import { getIsoDate } from "../utils";
 import { IGetSubscription, ISubscriptionFilter } from "./types";
@@ -199,6 +200,11 @@ export const subscriptionEdit = async ({
   let isoDateIn = getIsoDate(dateIn);
   let isoDateOut = getIsoDate(dateOut);
 
+  const paymentBySubscriptionId = await findPaymentBysubscriptionId(id);
+  if (!paymentBySubscriptionId) {
+    return null;
+  }
+
   const subscripUpdate = await prisma.subscription.update({
     where: { id },
     data: {
@@ -210,6 +216,9 @@ export const subscriptionEdit = async ({
       subscriptorId,
       Payment: {
         update: {
+          where: {
+            id: paymentBySubscriptionId.id,
+          },
           data: {
             transactionAmmount,
             totalAmmount,

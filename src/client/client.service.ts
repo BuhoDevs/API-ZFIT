@@ -214,7 +214,9 @@ export const allClientService = async ({
       return {
         ...resValues,
         ...resPersonValues,
-        Subscription: Subscription.map((ele: any) => ele.Discipline.label),
+        ...(banClieSubs && {
+          Subscription: Subscription?.map((ele: any) => ele.Discipline.label),
+        }),
       };
     }),
   };
