@@ -233,3 +233,22 @@ export const subscriptionEdit = async ({
   });
   return subscripUpdate;
 };
+
+export async function getSubscriptionByClient(ci: string) {
+  const subscriptions = await prisma.subscription.findMany({
+    where: {
+      status: true,
+      Client: {
+        Person: {
+          ci,
+        },
+      },
+    },
+    include: {
+      Discipline: { select: { label: true } },
+    },
+  });
+  return {
+    Subscription: subscriptions?.map((ele: any) => ele.Discipline.label),
+  };
+}

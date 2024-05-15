@@ -149,6 +149,16 @@ export const getClientByIdService = async (id: number) => {
   };
 };
 
+export const getClientByCI = async (ci: string | undefined) => {
+  const client = await prisma.person.findUnique({
+    where: { ci },
+    include: {
+      Client: true,
+    },
+  });
+  return client;
+};
+
 export const allClientService = async ({
   ci,
   firstname,

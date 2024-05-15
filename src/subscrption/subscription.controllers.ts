@@ -99,7 +99,7 @@ export const getSubscriptionById = async (req: Request, res: Response) => {
   } catch (error) {
     return res
       .status(500)
-      .json({ message: "No se pudo obtener la Suscipción", error });
+      .json({ message: "No se pudo obtener la Suscripción", error });
   }
 };
 

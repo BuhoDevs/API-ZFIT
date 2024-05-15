@@ -30,7 +30,7 @@ model Genre {
 
 model Person {
   id        Int       @id @default(autoincrement())
-  Genre     Genre?     @relation(fields: [genreId], references: [id])
+  Genre     Genre?    @relation(fields: [genreId], references: [id])
   genreId   Int?
   firstname String
   lastname  String
@@ -65,7 +65,6 @@ model Client {
   email        String?
   password     String?
   Subscription Subscription[]
-
 }
 
 model Discipline {
@@ -101,7 +100,9 @@ model Subscription {
   subscriptorId Int
   Payment       Payment[]
   createdAt     DateTime   @default(now()) @db.Timestamptz(6)
+  Checkin       Checkin[]
 }
+
 //
 model Payment {
   id                 Int          @id @default(autoincrement())
@@ -112,4 +113,12 @@ model Payment {
   status             Boolean
   Subscription       Subscription @relation(fields: [subscriptionId], references: [id])
   subscriptionId     Int
+}
+
+model Checkin {
+  id             Int           @id @default(autoincrement())
+  Subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  subscriptionId Int?
+  status         Boolean
+  createdAt      DateTime      @default(now()) @db.Timestamptz(6)
 }
