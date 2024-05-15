@@ -4,7 +4,6 @@ import { getIsoDate } from "../utils";
 import { IClientFilter } from "./types";
 import { Person } from "@prisma/client";
 import { IGenre } from "../seeders/genre/types";
-// import { IGenre } from "../seeders/genre/types";
 
 export const insertClient = async (
   firstname: string,
@@ -20,7 +19,8 @@ export const insertClient = async (
   password: string | undefined
 ) => {
   let isoBirthdate: string | undefined;
-  if (birthdate) {
+  if (birthdate)
+  {
     isoBirthdate = getIsoDate(birthdate);
   }
 
@@ -78,7 +78,8 @@ export const updateClientService = async (id: number, clientData: any) => {
   } = clientData;
 
   let isoBirthdate: string | undefined;
-  if (birthdate) {
+  if (birthdate)
+  {
     isoBirthdate = getIsoDate(birthdate);
   }
 
@@ -109,6 +110,51 @@ export const updateClientService = async (id: number, clientData: any) => {
   return updatedClient;
 };
 
+// export const getClientByIdService = async (id: number) => {
+//   const client = await prisma.client.findUnique({
+//     where: { id },
+//     include: {
+//       Person: {
+//         select: {
+//           id: true,
+//           firstname: true,
+//           lastname: true,
+//           birthdate: true,
+//           ci: true,
+//           phone: true,
+//           photo: true,
+//           Genre: true,
+//           // genreId: true,
+//         },
+//       },
+//     },
+//   });
+
+//   if (!client) throw new Error("Error cliente no encontrado");
+
+//   const { Genre, } = client.Person || {};
+
+
+
+//   // const genre = client.Person?.Genre
+
+//   let genreValue: IGenre | undefined;
+//   if (Genre)
+//   {
+//     genreValue = { ...Genre, value: Genre.id };
+//   }
+
+//   return {
+//     client: {
+//       ...client,
+//       // ...personWithoutGenre,
+//       ...genreValue,
+//     }
+//     // Person: {
+//     // },
+//   };
+// };
+
 export const getClientByIdService = async (id: number) => {
   const client = await prisma.client.findUnique({
     where: { id },
@@ -122,32 +168,44 @@ export const getClientByIdService = async (id: number) => {
           ci: true,
           phone: true,
           photo: true,
-          genreId: true,
-          Genre: true,
-        },
-      },
-    },
+          Genre: {
+            select: {
+              id: true,
+              name: true,
+              label: true,
+              status: true,
+
+            }
+          }
+        }
+      }
+    }
   });
 
   if (!client) throw new Error("Error cliente no encontrado");
 
-  const { Genre, ...personWithoutGenre } = client.Person || {};
-
-  const genre = client.Person?.Genre;
+  const { Person } = client;
+  const { Genre, ...personWithoutGenre } = Person || {};
 
   let genreValue: IGenre | undefined;
-  if (genre) {
-    genreValue = { ...genre, value: genre.id };
+  if (Genre)
+  {
+    genreValue = { ...Genre, value: Genre.id };
   }
 
   return {
-    ...client,
-    Person: {
-      Person: personWithoutGenre,
-      Genre: genreValue,
+    client: {
+      id: client.id,
+      weight: client.weight,
+      height: client.height,
+      status: client.status,
+      email: client.email
     },
+    person: personWithoutGenre,
+    genre: genreValue
   };
 };
+
 
 export const allClientService = async ({
   ci,
@@ -181,11 +239,11 @@ export const allClientService = async ({
       Person: true,
       ...(banClieSubs
         ? {
-            Subscription: {
-              where: { status: true },
-              select: { Discipline: true },
-            },
-          }
+          Subscription: {
+            where: { status: true },
+            select: { Discipline: true },
+          },
+        }
         : {}),
     },
   });
