@@ -68,8 +68,7 @@ export const updatedClient = async (req: Request, res: Response) => {
     birthdate,
     ci,
     phone,
-    photo,
-    personId,
+    // personId,
     weight,
     height,
     email,
@@ -85,19 +84,23 @@ export const updatedClient = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "El cliente no existe" });
     }
 
+    const photo = req.file ? `${apiUrl}/${req.file.filename}` : "";
+    let passEncriptado = "";
+    if (password) passEncriptado = await passwordHashado(password);
+
     const updatedClient = await updateClientService(id, {
-      genreId,
+      genreId: Number(genreId),
       firstname,
       lastname,
       birthdate: birthdate ? new Date(birthdate) : undefined,
       ci,
-      phone,
+      phone: Number(phone),
       photo,
-      personId,
+      // personId: Number(personId),
       weight,
       height,
       email,
-      password,
+      password: passEncriptado,
     });
 
     return res.json({
@@ -105,6 +108,7 @@ export const updatedClient = async (req: Request, res: Response) => {
       updatedClient,
     });
   } catch (error) {
+    console.log("error", error);
     return res.status(500).json({ error: "Error al actualizar el cliente" });
   }
 };
