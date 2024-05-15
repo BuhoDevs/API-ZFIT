@@ -21,7 +21,7 @@ clientRoutes.post(
 clientRoutes
   .route("/:id")
   .get(checkJwt, clientById)
-  .put(checkJwt, updatedClient)
+  .put(checkJwt, singleUploadMiddleware, updatedClient)
   .delete(checkJwt, deleteClientById);
 
 clientRoutes.post("/", checkJwt, allClient);

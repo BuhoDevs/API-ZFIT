@@ -70,7 +70,7 @@ export const updateClientService = async (id: number, clientData: any) => {
     ci,
     phone,
     photo,
-    personId,
+    // personId,
     weight,
     height,
     email,
@@ -86,7 +86,7 @@ export const updateClientService = async (id: number, clientData: any) => {
   const updatedClient = await prisma.client.update({
     where: { id },
     data: {
-      personId,
+      // personId,
       weight,
       height,
       email,
@@ -203,7 +203,7 @@ export const getClientByIdService = async (id: number) => {
     },
     person: personWithoutGenre,
     genre: genreValue
-  };
+   },
 };
 
 
