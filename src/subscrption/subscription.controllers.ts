@@ -146,7 +146,7 @@ export const editSubscription = async (req: Request, res: Response) => {
     }
 
     return res.json({
-      message: "Suscripción actualizado correctamente",
+      message: "Suscripción actualizada correctamente",
       subscripEdit,
     });
   } catch (error) {
