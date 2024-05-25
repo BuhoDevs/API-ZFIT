@@ -1,11 +1,11 @@
 import { Router } from "express";
 import { checkJwt } from "../middleware/checkJWT";
-import { checkin, verifySubsClient } from "./checkin.controllers";
+import { checkin } from "./checkin.controllers";
 
 const checkinRoutes = Router();
 
-checkinRoutes.post("/", checkJwt, checkin);
+checkinRoutes.post("/:ci/:subscriptionId", checkJwt, checkin);
 
-checkinRoutes.get("/", checkJwt, verifySubsClient);
+// checkinRoutes.get("/:ci", checkJwt, verifySubsClient);
 
 export default checkinRoutes;

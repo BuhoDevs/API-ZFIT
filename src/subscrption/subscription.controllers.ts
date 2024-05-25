@@ -5,8 +5,10 @@ import {
   allSubscriptionService,
   subscriptionService,
   subscriptionEdit,
+  getSubscriptionByClient,
 } from "../subscrption/subscription.service";
 import { getOffSet } from "../utilities/pagination";
+import { getClientByCI } from "../client/client.service";
 
 export async function subscription(req: Request, res: Response) {
   const {
@@ -152,5 +154,28 @@ export const editSubscription = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error modificar Suscripción:", error);
     return res.status(500).json({ error: "Error al modificar la Suscripción" });
+  }
+};
+
+export const getSubscriptionsByCi = async (req: Request, res: Response) => {
+  const { ci } = req.params;
+  try {
+    if (!ci) {
+      return res.status(400).json({ message: "El ci es requerido" });
+    }
+    const infoCliente = await getClientByCI(ci);
+    if (!infoCliente)
+      return res.status(404).json({ message: "Cliente no encontrado" });
+
+    const clientIdInfoSubs = await getSubscriptionByClient(ci);
+    if (!clientIdInfoSubs)
+      return res
+        .status(404)
+        .json({ message: "El cliente no tiene suscripción activa" });
+
+    return res.status(200).json({ ...infoCliente, ...clientIdInfoSubs });
+  } catch (error) {
+    console.error("Error buscar Cliente:", error);
+    return res.status(500).json({ error: "Error al buscar Cliente" });
   }
 };
