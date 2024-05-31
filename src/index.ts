@@ -6,6 +6,8 @@ import { insertClientSeeder } from "./seeders/client/client.service";
 import { insertGenreSeeders } from "./seeders/genre/genre.service";
 import { insertRoleSeeders } from "./seeders/role/role.service";
 import { insertSubsTypeSeeders } from "./seeders/subscriptionType/subscriptionType.service";
+import { subscriptionControl } from "./subscrption/subscription.service";
+import { insertDateEjecutedSeeders } from "./seeders/dateEjecuted/dateEjecuted.service";
 
 // Get PORT
 const currentPort = server.get("PORT");
@@ -46,5 +48,22 @@ server.listen(currentPort, async () => {
     await insertSubsTypeSeeders();
   }
 
+  const isNotDateEjecuted = await prisma.dateEjecuted.count();
+  if (!isNotDateEjecuted) {
+    await insertDateEjecutedSeeders();
+  }
+
   console.log(`Server is running on PORT ${currentPort}...`);
+
+  var cron = require("node-cron");
+
+  cron.schedule(
+    "40 01 * * *",
+    async () => {
+      await subscriptionControl({ isManual: false });
+    },
+    {
+      scheduled: true,
+    }
+  );
 });

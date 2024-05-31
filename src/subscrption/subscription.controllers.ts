@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
-
+import { prisma } from "../db";
 import {
   findSuscriptionById,
   allSubscriptionService,
   subscriptionService,
   subscriptionEdit,
+  subscriptionLow,
 } from "../subscrption/subscription.service";
 import { getOffSet } from "../utilities/pagination";
 
@@ -152,5 +153,34 @@ export const editSubscription = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error modificar Suscripción:", error);
     return res.status(500).json({ error: "Error al modificar la Suscripción" });
+  }
+};
+
+export const deleteSubscription = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    if (!id)
+      return res
+        .status(400)
+        .json({ message: "El id de suscripción es requerido " });
+
+    const existingSubscription = await prisma.subscription.findUnique({
+      where: { id: parseInt(id) },
+    });
+    if (!existingSubscription)
+      return res
+        .status(409)
+        .json({ message: "No existe una Suscripción con ese codigo" });
+
+    const lowSubscription = await subscriptionLow(parseInt(id));
+
+    return res
+      .status(lowSubscription.statuscode)
+      .json({ message: lowSubscription.message });
+  } catch (error) {
+    console.error("Error baja la Suscripción:", error);
+    return res
+      .status(500)
+      .json({ message: "Error al dar de baja la Suscripción" });
   }
 };

@@ -39,10 +39,9 @@ export const updateSubscriptionType = async (
 };
 
 export const deleteSubscriptionTypes = async (id: number) => {
-  const deletedSubscriptionType = await prisma.subsType.delete({
-    where: {
-      id,
-    },
+  const deletedSubscriptionType = await prisma.subsType.update({
+    where: { id },
+    data: { status: false },
   });
   return deletedSubscriptionType;
 };
