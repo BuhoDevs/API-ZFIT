@@ -14,7 +14,7 @@ export const checkinRegister = async (subscriptionId: number) => {
       message: "Error en el registro del checkin",
       statuscode: 409,
     };
-  return { message: "Checkin éxitoso", statuscode: 200 };
+  return { message: "Asistencia registrada exitosamente", statuscode: 200 };
 };
 
 export const findSuscriptionOnCheckin = async (subscriptionId: number) => {

@@ -156,7 +156,10 @@ export const getClientByCI = async (ci: string | undefined) => {
       Client: true,
     },
   });
-  return client;
+  return {
+    ...client,
+    Client: client?.Client[0],
+  };
 };
 
 export const allClientService = async ({
