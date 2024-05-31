@@ -58,7 +58,7 @@ server.listen(currentPort, async () => {
   var cron = require("node-cron");
 
   cron.schedule(
-    "40 01 * * *",
+    "30 20 * * *",
     async () => {
       await subscriptionControl({ isManual: false });
     },

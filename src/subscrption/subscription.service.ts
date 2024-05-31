@@ -262,20 +262,17 @@ export const subscriptionControl = async ({
     });
 
     if (!subsActives) return;
+
+    let dateEjecutedShort, currentDateShort;
     do {
-      const tableEjecuted = await prisma.dateEjecuted.findFirst({
-        where: { id: 1 },
-      });
+      const tableEjecuted = await prisma.dateEjecuted.findFirst();
       if (!tableEjecuted) return;
-      var dateEjecuted = tableEjecuted?.date;
-      var dateEjecutedShort = moment
+      const dateEjecuted = tableEjecuted?.date;
+      dateEjecutedShort = moment
         .utc(tableEjecuted?.date)
         .locale("es")
         .format("YYYY-MM-DD");
-      var currentDate = new Date();
-      var currentDateShort = moment(currentDate)
-        .locale("es")
-        .format("YYYY-MM-DD");
+      currentDateShort = moment().locale("es").format("YYYY-MM-DD");
 
       await prisma.subscription.updateMany({
         where: {
