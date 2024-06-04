@@ -1,3 +1,4 @@
+import moment from "moment";
 import { findPaymentBysubscriptionId } from "../Payment/payment.service";
 import { prisma } from "../db";
 import { getIsoDate } from "../utils";
@@ -238,6 +239,67 @@ export const subscriptionEdit = async ({
   return subscripUpdate;
 };
 
+export const subscriptionLow = async (subscripcionId: number) => {
+  const lowSubscription = await prisma.subscription.update({
+    where: { id: subscripcionId },
+    data: { status: false },
+  });
+
+  if (!lowSubscription)
+    return {
+      message: "Error Baja a la Suscripción",
+      statuscode: 409,
+    };
+  return { message: "Baja de la Suscripción con éxito", statuscode: 200 };
+};
+
+export const subscriptionControl = async ({
+  isManual = false,
+}: {
+  isManual: boolean;
+}) => {
+  try {
+    const subsActives = await prisma.subscription.findMany({
+      where: {
+        status: true,
+      },
+    });
+
+    if (!subsActives) return;
+
+    let dateEjecutedShort, currentDateShort;
+    do {
+      const tableEjecuted = await prisma.dateEjecuted.findFirst();
+      if (!tableEjecuted) return;
+      const dateEjecuted = tableEjecuted?.date;
+      dateEjecutedShort = moment
+        .utc(tableEjecuted?.date)
+        .locale("es")
+        .format("YYYY-MM-DD");
+      currentDateShort = moment().locale("es").format("YYYY-MM-DD");
+
+      await prisma.subscription.updateMany({
+        where: {
+          dateOut: {
+            lte: new Date(isManual ? currentDateShort : dateEjecutedShort),
+          },
+          status: true,
+        },
+        data: { status: false },
+      });
+      if (!isManual) {
+        dateEjecuted?.setDate(dateEjecuted.getDate() + 1);
+        await prisma.dateEjecuted.update({
+          where: { id: 1 },
+          data: { date: dateEjecuted },
+        });
+      }
+    } while (new Date(dateEjecutedShort) < new Date(currentDateShort));
+    return;
+  } catch (error) {
+    console.log("el error es:" + error);
+  }
+}
 export async function getSubscriptionByClient(ci: string) {
   const currentDateTime = new Date();
   console.log(currentDateTime, "fecha actual");

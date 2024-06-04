@@ -115,6 +115,11 @@ model Payment {
   subscriptionId     Int
 }
 
+model DateEjecuted {
+  id   Int      @id @default(autoincrement())
+  date DateTime
+}
+
 model Checkin {
   id             Int           @id @default(autoincrement())
   Subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
