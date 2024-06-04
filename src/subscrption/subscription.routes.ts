@@ -5,6 +5,7 @@ import {
   subscription,
   editSubscription,
   deleteSubscription,
+  getSubscriptionsByCi,
 } from "../subscrption/subscription.controllers";
 import { checkJwt } from "../middleware/checkJWT";
 
@@ -15,6 +16,8 @@ subscriptionRoutes.post("/", checkJwt, subscription);
 subscriptionRoutes.post("/filters", checkJwt, allSubscription);
 
 subscriptionRoutes.get("/:id", checkJwt, getSubscriptionById);
+
+subscriptionRoutes.get("/ci/:ci", checkJwt, getSubscriptionsByCi);
 
 subscriptionRoutes.put("/:id", checkJwt, editSubscription);
 

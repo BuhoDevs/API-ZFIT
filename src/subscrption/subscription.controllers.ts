@@ -6,8 +6,10 @@ import {
   subscriptionService,
   subscriptionEdit,
   subscriptionLow,
+  getSubscriptionByClient,
 } from "../subscrption/subscription.service";
 import { getOffSet } from "../utilities/pagination";
+import { getClientByCI } from "../client/client.service";
 
 export async function subscription(req: Request, res: Response) {
   const {
@@ -100,7 +102,7 @@ export const getSubscriptionById = async (req: Request, res: Response) => {
   } catch (error) {
     return res
       .status(500)
-      .json({ message: "No se pudo obtener la Suscipción", error });
+      .json({ message: "No se pudo obtener la Suscripción", error });
   }
 };
 
@@ -182,5 +184,28 @@ export const deleteSubscription = async (req: Request, res: Response) => {
     return res
       .status(500)
       .json({ message: "Error al dar de baja la Suscripción" });
+  }
+};
+
+export const getSubscriptionsByCi = async (req: Request, res: Response) => {
+  const { ci } = req.params;
+  try {
+    if (!ci) {
+      return res.status(400).json({ message: "El ci es requerido" });
+    }
+    const infoCliente = await getClientByCI(ci);
+    if (!infoCliente)
+      return res.status(404).json({ message: "Cliente no encontrado" });
+
+    const clientIdInfoSubs = await getSubscriptionByClient(ci);
+    if (!clientIdInfoSubs)
+      return res
+        .status(404)
+        .json({ message: "El cliente no tiene suscripción activa" });
+
+    return res.status(200).json({ ...infoCliente, ...clientIdInfoSubs });
+  } catch (error) {
+    console.error("Error buscar Cliente:", error);
+    return res.status(500).json({ error: "Error al buscar Cliente" });
   }
 };

@@ -100,6 +100,7 @@ model Subscription {
   subscriptorId Int
   Payment       Payment[]
   createdAt     DateTime   @default(now()) @db.Timestamptz(6)
+  Checkin       Checkin[]
 }
 
 //
@@ -117,4 +118,12 @@ model Payment {
 model DateEjecuted {
   id   Int      @id @default(autoincrement())
   date DateTime
+}
+
+model Checkin {
+  id             Int           @id @default(autoincrement())
+  Subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  subscriptionId Int?
+  status         Boolean
+  createdAt      DateTime      @default(now()) @db.Timestamptz(6)
 }

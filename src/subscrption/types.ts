@@ -15,3 +15,7 @@ export interface ISubscriptionFilter {
 export interface IGetSubscription {
   subscripcionId: number;
 }
+
+export interface IGetSubscriptionByCi extends IGetSubscription {
+  ci: string;
+}
