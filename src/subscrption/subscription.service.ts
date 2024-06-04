@@ -1,7 +1,11 @@
 import { findPaymentBysubscriptionId } from "../Payment/payment.service";
 import { prisma } from "../db";
 import { getIsoDate } from "../utils";
-import { IGetSubscription, ISubscriptionFilter } from "./types";
+import {
+  IGetSubscription,
+  IGetSubscriptionByCi as IOtherGetSubscription,
+  ISubscriptionFilter,
+} from "./types";
 
 export async function subscriptionService({
   dateIn,
@@ -232,4 +236,53 @@ export const subscriptionEdit = async ({
     },
   });
   return subscripUpdate;
+};
+
+export async function getSubscriptionByClient(ci: string) {
+  const currentDateTime = new Date();
+  console.log(currentDateTime, "fecha actual");
+  const subscriptions = await prisma.subscription.findMany({
+    where: {
+      status: true,
+      Client: {
+        Person: {
+          ci,
+        },
+      },
+      dateIn: {
+        lte: currentDateTime,
+      },
+    },
+    include: {
+      Discipline: { select: { label: true, id: true } },
+    },
+  });
+  return {
+    // subscriptions,
+    subscriptions: subscriptions?.map((ele) => ({
+      id: ele.id,
+      Discipline: {
+        label: ele.Discipline.label,
+      },
+    })),
+  };
+}
+
+export const getSubscriptionByClientCi = async ({
+  subscripcionId,
+  ci,
+}: IOtherGetSubscription) => {
+  return prisma.subscription.findFirst({
+    where: {
+      Client: {
+        Person: {
+          ci,
+        },
+      },
+      id: subscripcionId,
+    },
+    include: {
+      Discipline: true,
+    },
+  });
 };

@@ -7,6 +7,7 @@ import genreRoutes from "../genre/genre.routes";
 
 import subsTypeRoutes from "../subscriptionType/substype.routes";
 import subscriptionRoutes from "../subscrption/subscription.routes";
+import checkinRoutes from "../checkin/checkin.routes";
 
 const indexRoutes = Router();
 
@@ -23,5 +24,7 @@ indexRoutes.use("/disciplines", disciplineRoutes);
 indexRoutes.use("/subscriptions", subscriptionRoutes);
 
 indexRoutes.use("/substypes", subsTypeRoutes);
+
+indexRoutes.use("/checkin", checkinRoutes);
 
 export default indexRoutes;
