@@ -128,6 +128,7 @@ export const getClientByIdService = async (id: number) => {
       },
     },
   });
+  console.log(client, "CLIENTE REQUEST");
 
   if (!client) throw new Error("Error cliente no encontrado");
 
@@ -147,16 +148,16 @@ export const getClientByIdService = async (id: number) => {
   //     Genre: genreValue,
   //   },
   const respta = {
+    ...personWithoutGenre,
     id: client.id,
     height: client.height,
     weight: client.weight,
     status: client.status,
     email: client.email,
     password: client.password,
-    ...personWithoutGenre,
     Genre: genreValue,
   };
-  // console.log("respuesta", respta);
+  console.log("respuesta", respta);
   return respta;
 };
 

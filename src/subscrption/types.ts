@@ -8,6 +8,7 @@ export interface ISubscriptionFilter {
   dateIn?: string;
   dateOut?: string;
   status?: boolean;
+  createdAt?: string;
   skip: number;
   take: number;
 }
@@ -18,4 +19,12 @@ export interface IGetSubscription {
 
 export interface IGetSubscriptionByCi extends IGetSubscription {
   ci: string;
+}
+
+export interface ISubscriptionBalance extends ISubscriptionFilter {}
+export interface IncomeReport {
+  discipline: string;
+  subsType: string;
+  totalAmount: number;
+  count: number;
 }

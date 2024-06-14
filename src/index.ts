@@ -8,6 +8,7 @@ import { insertRoleSeeders } from "./seeders/role/role.service";
 import { insertSubsTypeSeeders } from "./seeders/subscriptionType/subscriptionType.service";
 import { subscriptionControl } from "./subscrption/subscription.service";
 import { insertDateEjecutedSeeders } from "./seeders/dateEjecuted/dateEjecuted.service";
+import { insertExpenseCategorySeeders } from "./seeders/expenseCategory/expenseCategory.service";
 
 // Get PORT
 const currentPort = server.get("PORT");
@@ -51,6 +52,11 @@ server.listen(currentPort, async () => {
   const isNotDateEjecuted = await prisma.dateEjecuted.count();
   if (!isNotDateEjecuted) {
     await insertDateEjecutedSeeders();
+  }
+
+  const areExpenseCategoryExist = await prisma.expenseCategory.count();
+  if (!areExpenseCategoryExist) {
+    await insertExpenseCategorySeeders();
   }
 
   console.log(`Server is running on PORT ${currentPort}...`);
