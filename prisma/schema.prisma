@@ -64,6 +64,7 @@ model Client {
   status       Boolean        @default(true)
   email        String?
   password     String?
+  createdAt    DateTime       @default(now()) @db.Timestamptz(6)
   Subscription Subscription[]
 }
 
@@ -113,6 +114,7 @@ model Payment {
   status             Boolean
   Subscription       Subscription @relation(fields: [subscriptionId], references: [id])
   subscriptionId     Int
+  createdAt          DateTime     @default(now()) @db.Timestamptz(6)
 }
 
 model DateEjecuted {
@@ -126,4 +128,21 @@ model Checkin {
   subscriptionId Int?
   status         Boolean
   createdAt      DateTime      @default(now()) @db.Timestamptz(6)
+}
+
+model Expense {
+  id          Int             @id @default(autoincrement())
+  amount      Decimal         @db.Decimal(10, 2)
+  description String
+  category    ExpenseCategory @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  createdAt   DateTime        @default(now()) @db.Timestamptz(6)
+}
+
+model ExpenseCategory {
+  id      Int       @id @default(autoincrement())
+  name    String?   @unique
+  label   String    @unique
+  status  Boolean   @default(true)
+  Expense Expense[]
 }

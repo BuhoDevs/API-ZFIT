@@ -8,6 +8,8 @@ import genreRoutes from "../genre/genre.routes";
 import subsTypeRoutes from "../subscriptionType/substype.routes";
 import subscriptionRoutes from "../subscrption/subscription.routes";
 import checkinRoutes from "../checkin/checkin.routes";
+import expenseRoutes from "../expense/expense.routes";
+import balanceRoutes from "../balance/balance.routes";
 
 const indexRoutes = Router();
 
@@ -26,5 +28,9 @@ indexRoutes.use("/subscriptions", subscriptionRoutes);
 indexRoutes.use("/substypes", subsTypeRoutes);
 
 indexRoutes.use("/checkin", checkinRoutes);
+
+indexRoutes.use("/expenses", expenseRoutes);
+
+indexRoutes.use("/balances", balanceRoutes);
 
 export default indexRoutes;

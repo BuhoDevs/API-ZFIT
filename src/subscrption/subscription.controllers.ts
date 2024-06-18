@@ -7,9 +7,13 @@ import {
   subscriptionEdit,
   subscriptionLow,
   getSubscriptionByClient,
+  subscriptionBalanceService,
 } from "../subscrption/subscription.service";
 import { getOffSet } from "../utilities/pagination";
 import { getClientByCI } from "../client/client.service";
+import { getDefaultDates } from "../utils";
+import { parseISO } from "date-fns";
+import { getExpenseService } from "../expense/expense.service";
 
 export async function subscription(req: Request, res: Response) {
   const {
@@ -33,7 +37,7 @@ export async function subscription(req: Request, res: Response) {
       subsTypeId,
       subscriptorId,
       transactionAmmount,
-      outstanding,
+      outstanding: Number(outstanding),
       totalAmmount,
     });
     return res
@@ -207,5 +211,58 @@ export const getSubscriptionsByCi = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error buscar Cliente:", error);
     return res.status(500).json({ error: "Error al buscar Cliente" });
+  }
+};
+
+export const subscriptionBalance = async (req: Request, res: Response) => {
+  try {
+    const { startDate: startDateQuery, endDate: endDateQuery } = req.query;
+
+    let startDate: Date;
+    let endDate: Date;
+
+    if (startDateQuery && typeof startDateQuery === "string") {
+      startDate = parseISO(startDateQuery);
+    } else {
+      startDate = getDefaultDates().startDate;
+    }
+
+    if (endDateQuery && typeof endDateQuery === "string") {
+      endDate = parseISO(endDateQuery);
+    } else {
+      endDate = getDefaultDates().endDate;
+    }
+
+    const subscriptionBalance = await subscriptionBalanceService(
+      startDate,
+      endDate
+    );
+    const expenseBalance = await getExpenseService(startDate, endDate);
+
+    const totalIncome = subscriptionBalance.reduce(
+      (sum, item) => sum + item.totalAmount,
+      0
+    );
+    const totalExpense = expenseBalance.reduce(
+      (sum, item) => sum + item.totalAmount,
+      0
+    );
+
+    const netBalance = totalIncome - totalExpense;
+
+    return res
+      .status(200)
+      .json({
+        subscriptionBalance,
+        expenseBalance,
+        totalIncome,
+        totalExpense,
+        netBalance,
+      });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ error: "Error al obtener el balance de ingresos" });
   }
 };

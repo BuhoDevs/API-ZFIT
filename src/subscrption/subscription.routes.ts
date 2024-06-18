@@ -6,6 +6,7 @@ import {
   editSubscription,
   deleteSubscription,
   getSubscriptionsByCi,
+  subscriptionBalance,
 } from "../subscrption/subscription.controllers";
 import { checkJwt } from "../middleware/checkJWT";
 
@@ -22,5 +23,11 @@ subscriptionRoutes.get("/ci/:ci", checkJwt, getSubscriptionsByCi);
 subscriptionRoutes.put("/:id", checkJwt, editSubscription);
 
 subscriptionRoutes.delete("/:id", checkJwt, deleteSubscription);
+
+subscriptionRoutes.get(
+  "/balance/income-expense",
+  checkJwt,
+  subscriptionBalance
+);
 
 export default subscriptionRoutes;

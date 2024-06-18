@@ -6,6 +6,7 @@ import {
   IGetSubscription,
   IGetSubscriptionByCi as IOtherGetSubscription,
   ISubscriptionFilter,
+  IncomeReport,
 } from "./types";
 
 export async function subscriptionService({
@@ -299,7 +300,7 @@ export const subscriptionControl = async ({
   } catch (error) {
     console.log("el error es:" + error);
   }
-}
+};
 export async function getSubscriptionByClient(ci: string) {
   const currentDateTime = new Date();
   console.log(currentDateTime, "fecha actual");
@@ -347,4 +348,104 @@ export const getSubscriptionByClientCi = async ({
       Discipline: true,
     },
   });
+};
+
+// export async function subscriptionBalanceService({
+//   disciplineId,
+//   subsTypeId,
+//   dateIn: startDate,
+//   dateOut: finalDate,
+//   status,
+//   take,
+//   skip,
+// }: ISubscriptionBalance) {
+//   let isoDateIn;
+//   let isoDateOut;
+//   if (startDate) isoDateIn = getIsoDate(startDate);
+//   if (finalDate) isoDateOut = getIsoDate(finalDate);
+
+//   const subscriptions = await prisma.subscription.findMany({
+//     where: {
+//       status: status === undefined ? true : status,
+//       ...(disciplineId && {
+//         disciplineId,
+//       }),
+//       ...(subsTypeId && { subsTypeId }),
+//       ...(isoDateIn && { createdAt: { gte: isoDateIn } }),
+//       ...(isoDateOut && { createdAt: { lte: isoDateOut } }),
+//     },
+//     skip,
+//     take,
+//     include: {
+//       Client: { select: { Person: true } },
+//       SubsType: true,
+//       User: { select: { Person: true } },
+//       Discipline: { select: { label: true } },
+//     },
+//   });
+
+//   const totalLength = await prisma.subscription.count({
+//     where: {
+//       status: status === undefined ? true : status,
+//       ...(disciplineId && {
+//         disciplineId,
+//       }),
+//       ...(subsTypeId && { subsTypeId }),
+//       ...(isoDateIn && { createdAt: { gte: isoDateIn } }),
+//       ...(isoDateOut && { dateOut: { gte: isoDateOut } }),
+//     },
+//   });
+
+//   return {
+//     totalLength,
+//     subscriptions,
+//   };
+// }
+
+export const subscriptionBalanceService = async (
+  startDate: Date,
+  endDate: Date
+): Promise<IncomeReport[]> => {
+  const subscriptions = await prisma.subscription.findMany({
+    where: {
+      createdAt: {
+        gte: startDate,
+        lte: endDate,
+      },
+    },
+    include: {
+      Discipline: true,
+      SubsType: true,
+      Payment: true,
+    },
+  });
+
+  const report = subscriptions.reduce<IncomeReport[]>((acc, subscription) => {
+    const { Discipline, SubsType, Payment } = subscription;
+    const totalAmount = Payment.reduce(
+      (sum, payment) => sum + payment.totalAmmount,
+      0
+    );
+
+    const existingReport = acc.find(
+      (item) =>
+        item.discipline === Discipline.label && item.subsType === SubsType.label
+    );
+
+    if (existingReport) {
+      existingReport.totalAmount += totalAmount;
+      existingReport.count += 1;
+    } else {
+      acc.push({
+        discipline: Discipline.label,
+        subsType: SubsType.label,
+        totalAmount,
+        count: 1,
+      });
+    }
+
+    return acc;
+  }, []);
+
+  return report;
 };
