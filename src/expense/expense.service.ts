@@ -1,5 +1,11 @@
+import moment from "moment";
 import { prisma } from "../db";
-import { CreateExpense, ExpenseReport } from "./types";
+import {
+  CreateExpense,
+  ExpenseReport,
+  IExpenseFilters,
+  IExpensePatch,
+} from "./types";
 
 export const createExpenseService = async (inputData: CreateExpense) => {
   const { createdAt, amount, description, categoryId } = inputData;
@@ -51,4 +57,84 @@ export const getExpenseService = async (
   }, []);
 
   return report;
+};
+
+export async function findExpenseByFilters({
+  categoryId,
+  description,
+  startDate,
+  endDate,
+  take,
+  skip,
+}: IExpenseFilters) {
+  const startDateUTC = moment(startDate).utc().startOf("day").toISOString();
+  const endDateUTC = moment(endDate).utc().endOf("day").toISOString();
+
+  const expenses = await prisma.expense.findMany({
+    where: {
+      createdAt: {
+        gte: startDateUTC,
+        lte: endDateUTC,
+      },
+      ...(categoryId && {
+        categoryId,
+      }),
+      ...(description && {
+        description: { contains: description, mode: "insensitive" },
+      }),
+    },
+    skip,
+    take,
+    include: {
+      category: true,
+    },
+  });
+
+  const totalLength = await prisma.expense.count({
+    where: {
+      createdAt: {
+        gte: startDate,
+        lte: endDate,
+      },
+      ...(categoryId && {
+        categoryId,
+      }),
+      ...(description && {
+        description: { contains: description, mode: "insensitive" },
+      }),
+    },
+  });
+
+  return {
+    totalLength,
+    expenses,
+  };
+}
+
+export const updateExpenseService = async ({
+  id,
+  amount,
+  categoryId,
+  description,
+}: IExpensePatch) => {
+  return prisma.expense.update({
+    where: {
+      id,
+    },
+    data: {
+      amount,
+      categoryId,
+      description,
+    },
+  });
+};
+
+export const findAllExpenseCategories = async () => {
+  const categories = await prisma.expenseCategory.findMany();
+  return categories.map((cat) => {
+    return {
+      ...cat,
+      value: cat.id,
+    };
+  });
 };
