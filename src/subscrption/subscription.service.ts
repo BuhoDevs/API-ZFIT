@@ -303,7 +303,6 @@ export const subscriptionControl = async ({
 };
 export async function getSubscriptionByClient(ci: string) {
   const currentDateTime = new Date();
-  console.log(currentDateTime, "fecha actual");
   const subscriptions = await prisma.subscription.findMany({
     where: {
       status: true,

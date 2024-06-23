@@ -10,3 +10,19 @@ export interface ExpenseReport {
   totalAmount: number;
   count: number;
 }
+
+export interface IExpenseFilters {
+  categoryId?: number;
+  description?: string;
+  startDate: Date;
+  endDate: Date;
+  skip: number;
+  take: number;
+}
+
+export interface IExpensePatch {
+  id: number;
+  amount: number;
+  categoryId: number;
+  description: string;
+}
