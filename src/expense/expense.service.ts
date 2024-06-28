@@ -93,8 +93,8 @@ export async function findExpenseByFilters({
   const totalLength = await prisma.expense.count({
     where: {
       createdAt: {
-        gte: startDate,
-        lte: endDate,
+        gte: startDateUTC,
+        lte: endDateUTC,
       },
       ...(categoryId && {
         categoryId,
