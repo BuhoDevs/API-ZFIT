@@ -107,7 +107,10 @@ export async function findExpenseByFilters({
 
   return {
     totalLength,
-    expenses,
+    expenses: expenses.map((expense) => ({
+      ...expense,
+      category: { ...expense.category, value: expense.category.id },
+    })),
   };
 }
 
