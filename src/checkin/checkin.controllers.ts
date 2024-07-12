@@ -1,29 +1,11 @@
 import { Request, Response } from "express";
 import { getSubscriptionByClientCi } from "../subscrption/subscription.service";
-import { checkinRegister, findSuscriptionOnCheckin } from "./checkin.service";
-
-// export const verifySubsClient = async (req: Request, res: Response) => {
-//   const { ci } = req.params;
-//   try {
-//     if (!ci) {
-//       return res.status(400).json({ message: "El ci es requerido" });
-//     }
-//     const infoCliente = await getClientByCI(ci);
-//     if (!infoCliente)
-//       return res.status(404).json({ message: "Cliente no encontrado" });
-
-//     const clientIdInfoSubs = await getSubscriptionByClient(ci);
-//     if (!clientIdInfoSubs)
-//       return res
-//         .status(404)
-//         .json({ message: "El cliente no tiene suscripción activa" });
-
-//     return res.status(200).json({ ...infoCliente, ...clientIdInfoSubs });
-//   } catch (error) {
-//     console.error("Error buscar Cliente:", error);
-//     return res.status(500).json({ error: "Error al buscar Cliente" });
-//   }
-// };
+import {
+  checkinRegister,
+  findCurrentAttendances,
+  findSuscriptionOnCheckin,
+} from "./checkin.service";
+import { getOffSet } from "../utilities/pagination";
 
 export const checkin = async (req: Request, res: Response) => {
   const { ci, subscriptionId } = req.params;
@@ -66,5 +48,29 @@ export const checkin = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error registro Checkin:", error);
     return res.status(500).json({ error: "Error en el Checkin" });
+  }
+};
+
+export const currentAttendance = async (req: Request, res: Response) => {
+  const take = req.query.take
+    ? parseInt(req.query.take as string, 10)
+    : undefined;
+  const skip = req.query.skip
+    ? parseInt(req.query.skip as string, 10)
+    : undefined;
+  try {
+    const offSetBySkip = getOffSet({ skip, take });
+
+    const currentAttendances = await findCurrentAttendances({
+      take: take || 10,
+      skip: offSetBySkip,
+    });
+
+    return res.json(currentAttendances);
+  } catch (error) {
+    console.error("Error al obtener datos de asistencia:", error);
+    return res
+      .status(500)
+      .json({ error: "Error al obtener datos de asistencia" });
   }
 };

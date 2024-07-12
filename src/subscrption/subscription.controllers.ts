@@ -8,6 +8,9 @@ import {
   subscriptionLow,
   getSubscriptionByClient,
   subscriptionBalanceService,
+  findTotalActiveMembers,
+  findTotalNewMembersThisMonth,
+  findMembershipsExpiringSoon,
 } from "../subscrption/subscription.service";
 import { getOffSet } from "../utilities/pagination";
 import { getClientByCI } from "../client/client.service";
@@ -250,19 +253,74 @@ export const subscriptionBalance = async (req: Request, res: Response) => {
 
     const netBalance = totalIncome - totalExpense;
 
-    return res
-      .status(200)
-      .json({
-        subscriptionBalance,
-        expenseBalance,
-        totalIncome,
-        totalExpense,
-        netBalance,
-      });
+    return res.status(200).json({
+      subscriptionBalance,
+      expenseBalance,
+      totalIncome,
+      totalExpense,
+      netBalance,
+    });
   } catch (error) {
     console.error(error);
     return res
       .status(500)
       .json({ error: "Error al obtener el balance de ingresos" });
+  }
+};
+
+// Total de miembros activos
+export const getTotalActiveMembers = async (_req: Request, res: Response) => {
+  try {
+    const totalActiveMembers = await findTotalActiveMembers();
+    return res.json({ totalActiveMembers });
+  } catch (error) {
+    console.error("Error al obtener el total de miembros activos:", error);
+    return res
+      .status(500)
+      .json({ error: "Error al obtener el total de miembros activos" });
+  }
+};
+
+export const getTotalNewMembersThisMonth = async (
+  _req: Request,
+  res: Response
+) => {
+  try {
+    const totalNewMembersThisMonth = await findTotalNewMembersThisMonth();
+    return res.json({ totalNewMembersThisMonth });
+  } catch (error) {
+    console.error(
+      "Error al obtener el total de miembros nuevos este mes:",
+      error
+    );
+    return res
+      .status(500)
+      .json({ error: "Error al obtener el total de miembros nuevos este mes" });
+  }
+};
+
+// Membresías que expiran pronto
+export const getMembershipsExpiringSoon = async (
+  req: Request,
+  res: Response
+) => {
+  const take = req.query.take
+    ? parseInt(req.query.take as string, 10)
+    : undefined;
+  const skip = req.query.skip
+    ? parseInt(req.query.skip as string, 10)
+    : undefined;
+  try {
+    const offSetBySkip = getOffSet({ skip, take });
+    const membershipsExpiringSoon = await findMembershipsExpiringSoon({
+      take: take || 10,
+      skip: offSetBySkip,
+    });
+    return res.json(membershipsExpiringSoon);
+  } catch (error) {
+    console.error("Error al obtener las membresías que expiran pronto:", error);
+    return res
+      .status(500)
+      .json({ error: "Error al obtener las membresías que expiran pronto" });
   }
 };

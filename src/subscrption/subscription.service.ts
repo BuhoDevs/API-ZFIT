@@ -349,67 +349,17 @@ export const getSubscriptionByClientCi = async ({
   });
 };
 
-// export async function subscriptionBalanceService({
-//   disciplineId,
-//   subsTypeId,
-//   dateIn: startDate,
-//   dateOut: finalDate,
-//   status,
-//   take,
-//   skip,
-// }: ISubscriptionBalance) {
-//   let isoDateIn;
-//   let isoDateOut;
-//   if (startDate) isoDateIn = getIsoDate(startDate);
-//   if (finalDate) isoDateOut = getIsoDate(finalDate);
-
-//   const subscriptions = await prisma.subscription.findMany({
-//     where: {
-//       status: status === undefined ? true : status,
-//       ...(disciplineId && {
-//         disciplineId,
-//       }),
-//       ...(subsTypeId && { subsTypeId }),
-//       ...(isoDateIn && { createdAt: { gte: isoDateIn } }),
-//       ...(isoDateOut && { createdAt: { lte: isoDateOut } }),
-//     },
-//     skip,
-//     take,
-//     include: {
-//       Client: { select: { Person: true } },
-//       SubsType: true,
-//       User: { select: { Person: true } },
-//       Discipline: { select: { label: true } },
-//     },
-//   });
-
-//   const totalLength = await prisma.subscription.count({
-//     where: {
-//       status: status === undefined ? true : status,
-//       ...(disciplineId && {
-//         disciplineId,
-//       }),
-//       ...(subsTypeId && { subsTypeId }),
-//       ...(isoDateIn && { createdAt: { gte: isoDateIn } }),
-//       ...(isoDateOut && { dateOut: { gte: isoDateOut } }),
-//     },
-//   });
-
-//   return {
-//     totalLength,
-//     subscriptions,
-//   };
-// }
-
 export const subscriptionBalanceService = async (
   startDate: Date,
   endDate: Date
 ): Promise<IncomeReport[]> => {
+  const startDateUTC = moment(startDate).utc().startOf("day").toISOString();
+  const endDateUTC = moment(endDate).utc().endOf("day").toISOString();
   const subscriptions = await prisma.subscription.findMany({
     where: {
       createdAt: {
-        gte: startDate,
-        lte: endDate,
+        gte: startDateUTC,
+        lte: endDateUTC,
       },
     },
     include: {
@@ -447,4 +397,110 @@ export const subscriptionBalanceService = async (
   }, []);
 
   return report;
+};
+
+export const findTotalActiveMembers = async () => {
+  return prisma.subscription.count({
+    where: { status: true },
+  });
+};
+
+export const findTotalNewMembersThisMonth = async () => {
+  // Fechas en UTC para las consultas
+  const startOfMonthUTC = moment().utc().startOf("month").toISOString();
+  const endOfMonthUTC = moment().utc().endOf("month").toISOString();
+
+  return prisma.subscription.count({
+    where: {
+      dateIn: {
+        gte: startOfMonthUTC,
+        lte: endOfMonthUTC,
+      },
+      status: true,
+    },
+  });
+};
+
+export const findMembershipsExpiringSoon = async ({
+  take,
+  skip,
+}: {
+  take: number;
+  skip: number;
+}) => {
+  // Fechas en UTC para las consultas
+  const today = moment().utc().startOf("day").toISOString();
+  const sevenDaysFromNow = moment()
+    .utc()
+    .endOf("day")
+    .add(7, "days")
+    .toISOString();
+
+  const membershipsExpiringSoon = await prisma.subscription.findMany({
+    where: {
+      dateOut: {
+        gte: today,
+        lte: sevenDaysFromNow,
+      },
+      status: true,
+    },
+    select: {
+      Client: {
+        select: {
+          Person: {
+            select: {
+              firstname: true,
+              lastname: true,
+              photo: true,
+            },
+          },
+        },
+      },
+      Discipline: {
+        select: {
+          label: true,
+        },
+      },
+      dateIn: true,
+      dateOut: true,
+    },
+    skip,
+    take,
+    orderBy: {
+      dateOut: "asc",
+    },
+  });
+
+  const totalLength = await prisma.subscription.count({
+    where: {
+      dateOut: {
+        gte: today,
+        lte: sevenDaysFromNow,
+      },
+      status: true,
+    },
+  });
+
+  const membershipsExpiringSoonParsed = membershipsExpiringSoon.map(
+    (membership) => {
+      return {
+        firstname: membership.Client.Person?.firstname,
+        lastname: membership.Client.Person?.lastname,
+        photo: membership.Client.Person?.photo,
+        Discipline: {
+          label: membership.Discipline.label,
+        },
+        dateIn: membership.dateIn,
+        dateOut: membership.dateOut,
+        display_name: `${membership.Client.Person?.firstname || ""}  ${
+          membership.Client.Person?.lastname || ""
+        } `,
+      };
+    }
+  );
+
+  return {
+    membershipsExpiringSoon: membershipsExpiringSoonParsed,
+    totalLength,
+  };
 };
