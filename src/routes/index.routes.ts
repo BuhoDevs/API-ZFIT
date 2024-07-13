@@ -10,6 +10,7 @@ import subscriptionRoutes from "../subscrption/subscription.routes";
 import checkinRoutes from "../checkin/checkin.routes";
 import expenseRoutes from "../expense/expense.routes";
 import balanceRoutes from "../balance/balance.routes";
+import paymentRoutes from "../Payment/payment.routes";
 
 const indexRoutes = Router();
 
@@ -32,5 +33,7 @@ indexRoutes.use("/checkin", checkinRoutes);
 indexRoutes.use("/expenses", expenseRoutes);
 
 indexRoutes.use("/balances", balanceRoutes);
+
+indexRoutes.use("/payments", paymentRoutes);
 
 export default indexRoutes;
