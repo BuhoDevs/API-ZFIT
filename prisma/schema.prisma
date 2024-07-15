@@ -24,32 +24,125 @@ model Genre {
   id     Int      @id @default(autoincrement())
   name   String   @unique
   label  String   @unique
-  Client Client[]
+  status Boolean
+  Person Person[]
 }
 
 model Person {
   id        Int       @id @default(autoincrement())
+  Genre     Genre?    @relation(fields: [genreId], references: [id])
+  genreId   Int?
   firstname String
   lastname  String
   birthdate DateTime?
+  ci        String    @unique
+  status    Boolean   @default(true)
+  phone     Int?
+  photo     String?
   User      User[]
   Client    Client[]
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique
-  password String
-  Role     Role?   @relation(fields: [roleId], references: [id])
-  roleId   Int?
-  Person   Person? @relation(fields: [personId], references: [id])
-  personId Int?
+  id           Int            @id @default(autoincrement())
+  email        String         @unique
+  password     String
+  status       Boolean
+  Role         Role?          @relation(fields: [roleId], references: [id])
+  roleId       Int?
+  Person       Person?        @relation(fields: [personId], references: [id])
+  personId     Int?
+  Subscription Subscription[]
 }
 
 model Client {
-  id       Int     @id @default(autoincrement())
-  Person   Person? @relation(fields: [personId], references: [id])
-  personId Int?
-  Genre    Genre?  @relation(fields: [genreId], references: [id])
-  genreId  Int?
+  id           Int            @id @default(autoincrement())
+  Person       Person?        @relation(fields: [personId], references: [id])
+  personId     Int?
+  weight       Decimal?       @db.Decimal(6, 2)
+  height       Decimal?       @db.Decimal(4, 2)
+  status       Boolean        @default(true)
+  email        String?
+  password     String?
+  createdAt    DateTime       @default(now()) @db.Timestamptz(6)
+  Subscription Subscription[]
+}
+
+model Discipline {
+  id           Int            @id @default(autoincrement())
+  name         String         @unique
+  label        String
+  status       Boolean
+  Subscription Subscription[]
+}
+
+model SubsType {
+  id           Int            @id @default(autoincrement())
+  name         String         @unique
+  label        String
+  montQuantity Int
+  price        Int
+  status       Boolean
+  Subscription Subscription[]
+}
+
+model Subscription {
+  id            Int        @id @default(autoincrement())
+  dateIn        DateTime
+  dateOut       DateTime
+  status        Boolean
+  Discipline    Discipline @relation(fields: [disciplineId], references: [id])
+  disciplineId  Int
+  Client        Client     @relation(fields: [clientId], references: [id])
+  clientId      Int
+  SubsType      SubsType   @relation(fields: [subsTypeId], references: [id])
+  subsTypeId    Int
+  User          User       @relation(fields: [subscriptorId], references: [id])
+  subscriptorId Int
+  Payment       Payment[]
+  createdAt     DateTime   @default(now()) @db.Timestamptz(6)
+  Checkin       Checkin[]
+}
+
+//
+model Payment {
+  id                 Int          @id @default(autoincrement())
+  transactionAmmount Int
+  totalAmmount       Int
+  outstanding        Int?
+  discount           Int?
+  status             Boolean
+  Subscription       Subscription @relation(fields: [subscriptionId], references: [id])
+  subscriptionId     Int
+  createdAt          DateTime     @default(now()) @db.Timestamptz(6)
+}
+
+model DateEjecuted {
+  id   Int      @id @default(autoincrement())
+  date DateTime
+}
+
+model Checkin {
+  id             Int           @id @default(autoincrement())
+  Subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  subscriptionId Int?
+  status         Boolean
+  createdAt      DateTime      @default(now()) @db.Timestamptz(6)
+}
+
+model Expense {
+  id          Int             @id @default(autoincrement())
+  amount      Decimal         @db.Decimal(10, 2)
+  description String
+  category    ExpenseCategory @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  createdAt   DateTime        @default(now()) @db.Timestamptz(6)
+}
+
+model ExpenseCategory {
+  id      Int       @id @default(autoincrement())
+  name    String?   @unique
+  label   String    @unique
+  status  Boolean   @default(true)
+  Expense Expense[]
 }

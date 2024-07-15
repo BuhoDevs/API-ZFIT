@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const subscription_controllers_1 = require("../subscrption/subscription.controllers");
+const checkJWT_1 = require("../middleware/checkJWT");
+const subscriptionRoutes = (0, express_1.Router)();
+subscriptionRoutes.post("/", checkJWT_1.checkJwt, subscription_controllers_1.subscription);
+subscriptionRoutes.post("/filters", checkJWT_1.checkJwt, subscription_controllers_1.allSubscription);
+subscriptionRoutes.get("/:id", checkJWT_1.checkJwt, subscription_controllers_1.getSubscriptionById);
+exports.default = subscriptionRoutes;

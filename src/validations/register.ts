@@ -4,20 +4,19 @@ import { validationPassword } from "./items/password";
 import { validationFullName } from "./items/name";
 
 export const validateRegister = (admin: IAdmin): IAdmin => {
-
-  if (!admin.user && !admin.password && !admin.email) {
-    throw new Error("Todos los campos son requeridos")
+  if (!admin.firstname && !admin.password && !admin.email) {
+    throw new Error("Todos los campos son requeridos");
   }
 
-  validationFullName(admin.user);
+  validationFullName(admin.firstname);
 
   validationEmail(admin.email);
 
   validationPassword(admin.password);
 
-  if (validationPassword(admin.password) !== admin.confirmPassword) {
-    throw new Error("El password no coincide")
-  }
+  // if (validationPassword(admin.password) !== admin.confirmPassword) {
+  //   throw new Error("El password no coincide");
+  // }
 
   return admin;
-}
+};

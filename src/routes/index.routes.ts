@@ -1,15 +1,39 @@
-import { Response, Router } from "express";
+import { Router } from "express";
+import authRoutes from "../auth/auth.routes";
+import userRoutes from "../user/user.routes";
+import clientRoutes from "../client/client.routes";
+import disciplineRoutes from "../discipline/discipline.routes";
+import genreRoutes from "../genre/genre.routes";
+
+import subsTypeRoutes from "../subscriptionType/substype.routes";
+import subscriptionRoutes from "../subscrption/subscription.routes";
+import checkinRoutes from "../checkin/checkin.routes";
+import expenseRoutes from "../expense/expense.routes";
+import balanceRoutes from "../balance/balance.routes";
+import paymentRoutes from "../Payment/payment.routes";
 
 const indexRoutes = Router();
 
-indexRoutes.use("/auth", (res: Response) => {
-  // TODO: migrar este controlador al respectivo archivo de rutas especificas para AUTH
-  return res.send("ruta encargada de la autenticacion");
-});
+indexRoutes.use("/auth", authRoutes);
 
-indexRoutes.use("/patients", (res: Response) => {
-  // TODO: migrar este controlador al respectivo archivo de rutas especificas para PATIENTS
-  return res.send("ruta encargada de los recursos de los pacientes");
-});
+indexRoutes.use("/users", userRoutes);
+
+indexRoutes.use("/clients", clientRoutes);
+
+indexRoutes.use("/genres", genreRoutes);
+
+indexRoutes.use("/disciplines", disciplineRoutes);
+
+indexRoutes.use("/subscriptions", subscriptionRoutes);
+
+indexRoutes.use("/substypes", subsTypeRoutes);
+
+indexRoutes.use("/checkin", checkinRoutes);
+
+indexRoutes.use("/expenses", expenseRoutes);
+
+indexRoutes.use("/balances", balanceRoutes);
+
+indexRoutes.use("/payments", paymentRoutes);
 
 export default indexRoutes;
