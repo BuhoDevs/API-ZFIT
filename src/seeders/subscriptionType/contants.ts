@@ -15,4 +15,12 @@ export const subsTypeCollection: ISubscriptionType[] = [
     price: 1000,
     status: true,
   },
+  // TODO: agregar seeder para la sesion/diaria
+  {
+    name: "session",
+    label: "sesion",
+    montQuantity: 0,
+    price: 10,
+    status: true,
+  },
 ];
