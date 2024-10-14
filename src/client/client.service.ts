@@ -30,7 +30,7 @@ export const insertClient = async (
       lastname,
       ...(isoBirthdate && { birthdate: isoBirthdate }),
       ci,
-      phone,
+      ...(phone && { phone: Number(phone) }),
       photo,
       genreId,
       Client: {
@@ -97,7 +97,7 @@ export const updateClientService = async (id: number, clientData: any) => {
           lastname,
           ...(isoBirthdate && { birthdate: isoBirthdate }),
           ci,
-          phone,
+          ...(phone && { phone: Number(phone) }),
           photo,
         },
       },
