@@ -41,7 +41,7 @@ export const clientRegister = async (req: Request, res: Response) => {
       lastname,
       birthdate,
       ci,
-      Number(phone),
+      phone,
       photo,
       Number(genreId),
       weight,
@@ -78,13 +78,16 @@ export const updatedClient = async (req: Request, res: Response) => {
   try {
     const existingClient = await prisma.client.findUnique({
       where: { id },
+      include: { Person: true },
     });
 
     if (!existingClient) {
       return res.status(404).json({ message: "El cliente no existe" });
     }
 
-    const photo = req.file ? `${apiUrl}/${req.file.filename}` : "";
+    const photo = req.file
+      ? `${apiUrl}/${req.file.filename}`
+      : existingClient.Person?.photo;
     let passEncriptado = "";
     if (password) passEncriptado = await passwordHashado(password);
 
@@ -94,7 +97,7 @@ export const updatedClient = async (req: Request, res: Response) => {
       lastname,
       birthdate: birthdate ? new Date(birthdate) : undefined,
       ci,
-      phone: Number(phone),
+      phone,
       photo,
       // personId: Number(personId),
       weight,

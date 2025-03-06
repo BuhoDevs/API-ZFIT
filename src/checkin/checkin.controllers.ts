@@ -42,9 +42,14 @@ export const checkin = async (req: Request, res: Response) => {
 
     const newCheckin = await checkinRegister(Number(subscriptionId));
 
-    return res
-      .status(newCheckin.statuscode)
-      .json({ message: newCheckin.message });
+    return res.status(newCheckin.statuscode).json({
+      message: newCheckin.message,
+      Subscription: {
+        dateOut: belongingToClient.dateOut,
+      },
+      Client: belongingToClient.Client,
+      discipline: belongingToClient.Discipline.label,
+    });
   } catch (error) {
     console.error("Error registro Checkin:", error);
     return res.status(500).json({ error: "Error en el Checkin" });

@@ -345,6 +345,13 @@ export const getSubscriptionByClientCi = async ({
     },
     include: {
       Discipline: true,
+      Client: {
+        select: {
+          Person: {
+            select: { firstname: true },
+          },
+        },
+      },
     },
   });
 };

@@ -115,6 +115,7 @@ model Payment {
   Subscription       Subscription @relation(fields: [subscriptionId], references: [id])
   subscriptionId     Int
   createdAt          DateTime     @default(now()) @db.Timestamptz(6)
+  description        String?
 }
 
 model DateEjecuted {
